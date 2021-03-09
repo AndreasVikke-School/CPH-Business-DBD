@@ -1,0 +1,6 @@
+# .dockerignore
+
+Dockerfile
+[a|A]ssets
+[b|B]in
+[o|O]bj
