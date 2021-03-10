@@ -45,6 +45,8 @@ docker exec <container_name> psql <database_name> -f <file_name> -U <user_name> 
 ```
 
 ### 2. Change ConnectionString for PostgreSQL
+- To get Ip of Container:
+    - ``` docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id ```
 - [appsettings](./appsettings.json)
 
 ### 3. Build Docker Image
