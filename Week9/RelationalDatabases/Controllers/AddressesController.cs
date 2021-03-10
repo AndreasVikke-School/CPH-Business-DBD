@@ -13,7 +13,7 @@ using RelationalDatabases.Persistent.Repositories;
 namespace RelationalDatabases.Controllers
 {
     [ApiController]
-    [Route("/address")]
+    [Route("api/address")]
     public class AddressesController : ControllerBase
     {
         private readonly UnitOfWork unitOfWork;

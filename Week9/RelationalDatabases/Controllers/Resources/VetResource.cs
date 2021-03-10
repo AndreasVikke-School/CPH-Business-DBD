@@ -14,7 +14,7 @@ namespace RelationalDatabases.Controllers.Resources
 
         #region  Relations
         [Required]
-        public AddressResource address { get; set; }
+        public long addressId { get; set; }
         #endregion
     }
 }

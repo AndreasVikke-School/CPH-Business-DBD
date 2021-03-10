@@ -13,7 +13,7 @@ using RelationalDatabases.Persistent.Repositories;
 namespace RelationalDatabases.Controllers
 {
     [ApiController]
-    [Route("/pets")]
+    [Route("api/pets")]
     public class PetsController : ControllerBase
     {
         private readonly UnitOfWork unitOfWork;
@@ -68,7 +68,7 @@ namespace RelationalDatabases.Controllers
 
             var vet = await this.vetRepository.GetAsync(pet.vetId);
             if(vet == null)
-                return NotFound("Vet Not Found");
+                return NotFound($"Vet with id {pet.vetId} Not Found");
 
             Pet newPet = new Pet {
                 name = pet.name,

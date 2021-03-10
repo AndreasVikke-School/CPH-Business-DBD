@@ -15,12 +15,11 @@ namespace RelationalDatabases.Persistent.Repositories
         #region GetByCVR
         public async Task<Vet> GetByCVRAsync(string cvr, bool includeRelated = false) {
             if(!includeRelated)
-            return await this.databaseContext.vets.SingleOrDefaultAsync(x => x.cvr == cvr);
+                return await this.databaseContext.vets.SingleOrDefaultAsync(x => x.cvr == cvr);
 
             var query = this.databaseContext.vets.AsQueryable();
 
             query = this.ApplyRelations(query);
-
 
             return await query.SingleOrDefaultAsync(x => x.cvr == cvr);
         }
