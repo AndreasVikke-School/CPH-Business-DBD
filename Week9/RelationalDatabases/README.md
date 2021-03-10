@@ -32,7 +32,7 @@
 - [Database SQL Dump](./SQLDump/Database.sql)
 - [Data SQL Dump](./SQLDump/DataDump.sql)
 
-#### If running Postgress as Docker:
+#### 1.1 If running Postgress as Docker:
 ```
 docker cp <local_file> <container_name>:<container_file>
     -> docker cp "C:/Database.sql" postgres:./Database.sql
