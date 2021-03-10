@@ -4,3 +4,5 @@ Dockerfile
 [a|A]ssets
 [b|B]in
 [o|O]bj
+SQLDump
+Migrations

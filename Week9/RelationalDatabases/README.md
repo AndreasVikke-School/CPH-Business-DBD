@@ -9,6 +9,7 @@
 
 ## Where to find solutions
 1. Design
+    - ![ER Diagram](./assets/ERDiagram.png)
     - Vi har valgt at gå med Single-Table strategy
     - Pros/Cons:
         - If you require the best performance and need to use polymorphic queries and relationships, you should choose the single table strategy. But be aware, that you can’t use not null constraints on subclass attributes which increase the risk of data inconsistencies.
