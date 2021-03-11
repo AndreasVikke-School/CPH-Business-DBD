@@ -1,4 +1,6 @@
 # Relational Databases - Databases for Developers
+Andreas Vikke, Asger Sørensen, Martin Frederiksen, William Huusfeldt
+
 ## Table of Contents
 1. [Assignment](#Assignment)
 2. [Where to find solutions](#Where-to-find-solutions)
@@ -10,7 +12,7 @@
 ## Where to find solutions
 1. Design
     - ![ER Diagram](./assets/ERDiagram.png)
-    - Vi har valgt at gå med Single-Table strategy
+    - WE have choosen to go with Single-Table strategy, as its easy to setup in Entity Framework by doing inheritance.
     - Pros/Cons:
         - If you require the best performance and need to use polymorphic queries and relationships, you should choose the single table strategy. But be aware, that you can’t use not null constraints on subclass attributes which increase the risk of data inconsistencies.
 
@@ -21,11 +23,11 @@
     - [Database SQL Dump](./SQLDump/Database.sql)
     - [Data SQL Dump](./SQLDump/DataDump.sql)
 3. External level implementation
-    - Vi har lavet vores Views som C# EntityFramework Repositories
+    - We have created our Views as C # EntityFramework Repositories
     - [Pet Repository](./Persistent/Repositories/PetRepository.cs)
     - [Base Repository](./Persistent/Repositories/BaseRepository.cs)
 4. Interface implementation
-    - Vi har brugt .NET Core API til at lave et API som kan vises gennem swagger (Se [How to run](#How-to-run))
+    - We have used the .NET Core API to create an API that can be displayed through swagger (See [How to run](#How-to-run))
     - [Pet API Controller](./Controllers/PetsController.cs)
 
 ## How to run
