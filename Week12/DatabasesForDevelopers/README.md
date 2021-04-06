@@ -1,4 +1,5 @@
 # Databases for Developers - Assignment 2
+Andreas Vikke, Asger Sørensen, Martin Frederiksen, William Huusfeldt
 ## Table of Contents
 - [Assignment](#Assignment)
 - [Task 1 - Investigation](#Task-1---Investigation)
