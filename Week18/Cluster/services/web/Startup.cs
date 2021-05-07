@@ -36,15 +36,12 @@ namespace web
                 });
                 endpoints.MapGet("/setup", async context =>
                 {
-                    using (var setup = new Setup())
-                    {
-                        string great = setup.RunSetup();
-                        await context.Response.WriteAsync(great);
-                    }
+                    string great = Setup.RunSetup();
+                    await context.Response.WriteAsync(great);
                 });
                 endpoints.MapGet("/greet", async context =>
                 {
-                    await context.Response.WriteAsync(HelloWorldExample.Greet("hello, world"));
+                    await context.Response.WriteAsync(HelloWorldExample.PrintGreeting("hello, world"));
                 });
             });
         }

@@ -4,34 +4,26 @@ using Neo4j.Driver;
 
 namespace web
 {
-    public class Setup : IDisposable
+    public class Setup
     {
-        private readonly IDriver _driver;
 
-        public Setup()
-        {
-            _driver = GraphDatabase.Driver("neo4j://core1:7687", AuthTokens.Basic("neo4j", "1234"));
-        }
-
-        public string RunSetup() {
+        public static string RunSetup() {
             string path = @"Files/";
 
             string setup1 = File.ReadAllText($"{path}Setup1.txt");
             string setup2 = File.ReadAllText($"{path}Setup2.txt");
 
-            using(var session = _driver.Session()) {
-                session.WriteTransaction(tx => {
-                    var result1 = tx.Run(setup1);
-                    var result2 = tx.Run(setup2);
-                    return "Done";
-                });
+            using(var databaseConnector = new DatabaseConnector()) {
+                using(var session = databaseConnector.GetSession()) {
+                    session.WriteTransaction(tx => {
+                        var result1 = tx.Run(setup1);
+                        var result2 = tx.Run(setup2);
+                        return "Done";
+                    });
+                }
             }
 
             return "Done";
-        }
-
-        public void Dispose() {
-            _driver?.Dispose();
         }
     }
 }
