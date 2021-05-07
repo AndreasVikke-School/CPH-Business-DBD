@@ -32,7 +32,7 @@ namespace web
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("<h1>Neo4J Cluster Assignment</h1><p>First run: <a href=\"/setup\">/setup<a> (a bit slow)</p><p>Then try: <a href=\"/greet\">/greet<a></p>");
+                    await context.Response.WriteAsync("<h1>Neo4J Cluster Assignment</h1><p>First run: <a href=\"/setup\">/setup<a> (a bit slow)</p><p>Then try: <a href=\"/greet\">/greet<a></p><p>Then try: <a href=\"/test\">/test<a></p>");
                 });
                 endpoints.MapGet("/setup", async context =>
                 {
@@ -41,7 +41,11 @@ namespace web
                 });
                 endpoints.MapGet("/greet", async context =>
                 {
-                    await context.Response.WriteAsync(HelloWorldExample.PrintGreeting("hello, world"));
+                    await context.Response.WriteAsync(HelloWorldExample.PrintGreeting("hello, world").Aggregate((a, b) => $"{a}\n{b}"));
+                });
+                endpoints.MapGet("/test", async context =>
+                {
+                    await context.Response.WriteAsync(Test.Run());
                 });
             });
         }

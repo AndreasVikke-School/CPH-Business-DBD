@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 x-shared:
     &common
@@ -7,7 +7,6 @@ x-shared:
     NEO4J_causal__clustering_initial__discovery__members: core1:5000,core2:5000,core3:5000
     NEO4J_dbms_memory_pagecache_size: "100M" 
     NEO4J_dbms_memory_heap_initial__size: "100M"
-    NEO4JLABS_PLUGINS: graph-data-science
 
 x-shared-core:
     &common-core
