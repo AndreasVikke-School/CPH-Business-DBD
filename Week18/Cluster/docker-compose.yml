@@ -7,6 +7,9 @@ x-shared:
     NEO4J_causal__clustering_initial__discovery__members: core1:5000,core2:5000,core3:5000
     NEO4J_dbms_memory_pagecache_size: "100M" 
     NEO4J_dbms_memory_heap_initial__size: "100M"
+    NEO4J_dbms_security_procedures_unrestricted: apoc.*,algo.*
+    NEO4J_dbms_security_procedures_whitelist: apoc.*,algo.*
+    NEO4JLABS_PLUGINS: '["apoc"]'
 
 x-shared-core:
     &common-core
