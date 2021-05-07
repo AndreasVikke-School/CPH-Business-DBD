@@ -32,7 +32,7 @@ namespace web
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("<h1>Neo4J Cluster Assignment</h1><br><p>First run: <a href=\"/setup\">/setup<a></p><br><p>Then try: <a href=\"/greet\">/greet<a></p>");
+                    await context.Response.WriteAsync("<h1>Neo4J Cluster Assignment</h1><p>First run: <a href=\"/setup\">/setup<a> (a bit slow)</p><p>Then try: <a href=\"/greet\">/greet<a></p>");
                 });
                 endpoints.MapGet("/setup", async context =>
                 {

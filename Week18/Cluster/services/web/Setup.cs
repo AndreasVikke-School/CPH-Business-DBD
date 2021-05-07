@@ -17,9 +17,7 @@ namespace web
             string path = @"Files/";
 
             string setup1 = File.ReadAllText($"{path}Setup1.txt");
-            Console.WriteLine(setup1);
             string setup2 = File.ReadAllText($"{path}Setup2.txt");
-            Console.WriteLine(setup2);
 
             using(var session = _driver.Session()) {
                 session.WriteTransaction(tx => {
