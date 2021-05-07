@@ -1,0 +1,146 @@
+version: '3.8'
+
+x-shared:
+    &common
+    NEO4J_AUTH: neo4j/1234
+    NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+    NEO4J_causal__clustering_initial__discovery__members: core1:5000,core2:5000,core3:5000
+    NEO4J_dbms_memory_pagecache_size: "100M" 
+    NEO4J_dbms_memory_heap_initial__size: "100M"
+    NEO4JLABS_PLUGINS: graph-data-science
+
+x-shared-core:
+    &common-core
+    <<: *common
+    NEO4J_dbms_mode: CORE
+    NEO4J_causal__clustering_minimum__core__cluster__size__at__formation: 3
+
+networks: 
+    lan:
+
+services:
+    
+    express:
+        build: ./services/web
+        networks:
+            - lan
+        ports: 
+            - 8000:80
+        depends_on:
+            core1:
+                condition: service_healthy
+            core2:
+                condition: service_healthy
+            core3:
+                condition: service_healthy
+            readreplica1:
+                condition: service_healthy
+            readreplica2:
+                condition: service_healthy
+
+    core1:
+        image: neo4j:4.2-enterprise
+        networks:
+            - lan 
+        ports: 
+            - "7474:7474"
+            - "7687:7687"
+        environment:
+            <<: *common-core
+            NEO4J_causal__clustering_discovery__advertised__address: core1:5000 
+            NEO4J_causal__clustering_transaction__advertised__address: core1:6000 
+            NEO4J_causal__clustering_raft__advertised__address: core1:7000
+            NEO4J_dbms_connectors_default__advertised__address: core1
+            NEO4J_dbms_connector_http_listen__address: :7474
+            NEO4J_dbms_connector_bolt_listen__address: :7687
+        healthcheck:
+            test: wget http://localhost:7474/browser -O -
+            interval: 1s
+            timeout: 3s
+            retries: 30
+
+    core2:
+        image: neo4j:4.2-enterprise
+        networks:
+            - lan
+        ports:
+            - "7475:7475"
+            - "7688:7688"
+        environment:
+            <<:  *common-core
+            NEO4J_causal__clustering_discovery__advertised__address: core2:5000
+            NEO4J_causal__clustering_transaction__advertised__address: core2:6000
+            NEO4J_causal__clustering_raft__advertised__address: core2:7000
+            NEO4J_dbms_connectors_default__advertised__address: core2
+            NEO4J_dbms_connector_http_listen__address: :7475
+            NEO4J_dbms_connector_bolt_listen__address: :7688
+        healthcheck:
+            test: wget http://localhost:7475/browser -O -
+            interval: 1s
+            timeout: 3s
+            retries: 30
+
+    core3:
+        image: neo4j:4.2-enterprise
+        networks:
+            - lan
+        ports:
+            - "7476:7476"
+            - "7689:7689"
+        environment:
+            <<:  *common-core
+            NEO4J_causal__clustering_discovery__advertised__address: core3:5000
+            NEO4J_causal__clustering_transaction__advertised__address: core3:6000
+            NEO4J_causal__clustering_raft__advertised__address: core3:7000
+            NEO4J_dbms_connectors_default__advertised__address: core3
+            NEO4J_dbms_connector_http_listen__address: :7476
+            NEO4J_dbms_connector_bolt_listen__address: :7689
+        healthcheck:
+            test: wget http://localhost:7476/browser -O -
+            interval: 1s
+            timeout: 3s
+            retries: 30
+
+    readreplica1:
+        image: neo4j:4.2-enterprise
+        networks:
+            - lan
+        ports:
+            - "7477:7477"
+            - "7690:7690"
+        environment:
+            <<:  *common
+            NEO4J_dbms_mode: READ_REPLICA
+            NEO4J_causal__clustering_discovery__advertised__address: readreplica1:5000
+            NEO4J_causal__clustering_transaction__advertised__address: readreplica1:6000
+            NEO4J_causal__clustering_raft__advertised__address: readreplica1:7000
+            NEO4J_dbms_connectors_default__advertised__address: readreplica1
+            NEO4J_dbms_connector_http_listen__address: :7477
+            NEO4J_dbms_connector_bolt_listen__address: :7690
+        healthcheck:
+            test: wget http://localhost:7477/browser -O -
+            interval: 1s
+            timeout: 3s
+            retries: 30
+
+    readreplica2:
+        image: neo4j:4.2-enterprise
+        networks:
+            - lan
+        ports:
+            - "7478:7478"
+            - "7691:7691"
+        environment:
+            <<:  *common
+            NEO4J_dbms_mode: READ_REPLICA
+            NEO4J_causal__clustering_discovery__advertised__address: readreplica2:5000
+            NEO4J_causal__clustering_transaction__advertised__address: readreplica2:6000
+            NEO4J_causal__clustering_raft__advertised__address: readreplica2:7000
+            NEO4J_dbms_connectors_default__advertised__address: readreplica2
+            NEO4J_dbms_connector_http_listen__address: :7478
+            NEO4J_dbms_connector_bolt_listen__address: :7691
+        healthcheck:
+            test: wget http://localhost:7478/browser -O -
+            interval: 1s
+            timeout: 3s
+            retries: 30
