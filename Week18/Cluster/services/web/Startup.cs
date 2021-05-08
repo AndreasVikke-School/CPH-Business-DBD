@@ -32,7 +32,15 @@ namespace web
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("<h1>Neo4J Cluster Assignment</h1><p>First run: <a href=\"/setup\">/setup<a> (a bit slow)</p><p>Then try: <a href=\"/greet\">/greet<a></p><p>Then try: <a href=\"/test\">/test<a></p>");
+                    await context.Response.WriteAsync("<h1>Neo4J Cluster Assignment</h1><p>First run: <a href=\"/setup\">/setup<a> (a bit slow)</p><p>Then try: <a href=\"/greet\">/greet<a></p>"+
+                        "<p>Query1: <a href=\"/test\">/test<a></p>"+
+                        "<p>Query2: <a href=\"/human\">/human<a></p>"+
+                        "<p>Query3: <a href=\"/payment\">/payment<a></p>"+
+                        "<p>Query4: <a href=\"/product\">/product<a></p>"+
+                        "<p>Query5: <a href=\"/release\">/release<a></p>"+
+                        "<p>Query6: <a href=\"/description\">/description<a></p>"+
+                        "<p>Query7: <a href=\"/uat\">/uat<a></p>"+
+                        "<p>Query8: <a href=\"/env\">/env<a></p>");
                 });
                 endpoints.MapGet("/setup", async context =>
                 {
@@ -46,6 +54,34 @@ namespace web
                 endpoints.MapGet("/test", async context =>
                 {
                     await context.Response.WriteAsync(Test.Run());
+                });
+                endpoints.MapGet("/human", async context =>
+                {
+                    await context.Response.WriteAsync(Human.Run());
+                });
+                endpoints.MapGet("/payment", async context =>
+                {
+                    await context.Response.WriteAsync(Payment.Run());
+                });
+                endpoints.MapGet("/product", async context =>
+                {
+                    await context.Response.WriteAsync(Payment.Run());
+                });
+                endpoints.MapGet("/release", async context =>
+                {
+                    await context.Response.WriteAsync(Release.Run());
+                });
+                endpoints.MapGet("/description", async context =>
+                {
+                    await context.Response.WriteAsync(Description.Run());
+                });
+                endpoints.MapGet("/uat", async context =>
+                {
+                    await context.Response.WriteAsync(UAT.Run());
+                });
+                endpoints.MapGet("/env", async context =>
+                {
+                    await context.Response.WriteAsync(Env.Run());
                 });
             });
         }
