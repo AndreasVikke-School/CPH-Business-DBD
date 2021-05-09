@@ -40,7 +40,8 @@ namespace web
                         "<p>Query5: <a href=\"/release\">/release<a></p>"+
                         "<p>Query6: <a href=\"/description\">/description<a></p>"+
                         "<p>Query7: <a href=\"/uat\">/uat<a></p>"+
-                        "<p>Query8: <a href=\"/env\">/env<a></p>");
+                        "<p>Query8: <a href=\"/env\">/env<a></p>"+
+                        "<p>Query9: <a href=\"/sftdev\">/sftdev<a></p>");
                 });
                 endpoints.MapGet("/setup", async context =>
                 {
@@ -82,6 +83,10 @@ namespace web
                 endpoints.MapGet("/env", async context =>
                 {
                     await context.Response.WriteAsync(Env.Run());
+                });
+                endpoints.MapGet("/sftdev", async context =>
+                {
+                    await context.Response.WriteAsync(SftDev.Run());
                 });
             });
         }
