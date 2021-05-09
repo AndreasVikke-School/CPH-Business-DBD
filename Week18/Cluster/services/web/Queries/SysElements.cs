@@ -4,17 +4,21 @@ using System.Text.Json;
 
 namespace web
 {
-    public class Env
+    public class SysElements
     {
-        private static readonly string query = "MATCH (rel:Release)--(env:Environment { name: \"Break Fix Environment\" }) "+
-                                            "RETURN {Rel:rel, Env:env} as Env";
-        public static string Run()
+        private static readonly string query = "MATCH (css:CssFile)--(vw:MvcView) " +
+                                        "OPTIONAL MATCH (vw)--(ctl:MvcController) " +
+                                        "RETURN {cssFile:  collect(DISTINCT css.name), " + 
+                                        "mvcView: collect(DISTINCT vw.name), " +
+                                        "mvcController: collect(DISTINCT ctl.name)} " +
+                                        "as MvcViewElements;";
+        public static string getElements()
         {
             using(var databaseConnector = new DatabaseConnector()) {
                 using (var session = databaseConnector.GetSession())
                 {
                     Dictionary<string, object> results = session.WriteTransaction(tx =>
-                    {
+                    { 
                         var result = tx.Run(query);
                         return (Dictionary<string, object>)result.Single()[0];
                     });
@@ -28,7 +32,7 @@ namespace web
             }
         }
 
-         public static string getQuery()
+        public static string getQuery()
         {
             return  "Result from: " + query + "\n\n";
         }

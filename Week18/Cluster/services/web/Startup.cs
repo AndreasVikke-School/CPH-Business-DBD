@@ -41,7 +41,8 @@ namespace web
                         "<p>Query6: <a href=\"/description\">/description<a></p>"+
                         "<p>Query7: <a href=\"/uat\">/uat<a></p>"+
                         "<p>Query8: <a href=\"/env\">/env<a></p>"+
-                        "<p>Query9: <a href=\"/sftdev\">/sftdev<a></p>");
+                        "<p>Query9: <a href=\"/sftdev\">/sftdev<a></p>"+
+                        "<p>Query10: <a href=\"/syselement\">/syselement<a></p>");
                 });
                 endpoints.MapGet("/setup", async context =>
                 {
@@ -66,27 +67,38 @@ namespace web
                 });
                 endpoints.MapGet("/product", async context =>
                 {
-                    await context.Response.WriteAsync(Payment.Run());
+                    await context.Response.WriteAsync(Product.getQuery());
+                    await context.Response.WriteAsync(Product.Run());
                 });
                 endpoints.MapGet("/release", async context =>
                 {
+                    await context.Response.WriteAsync(Release.getQuery());
                     await context.Response.WriteAsync(Release.Run());
                 });
                 endpoints.MapGet("/description", async context =>
                 {
+                    await context.Response.WriteAsync(Description.getQuery());
                     await context.Response.WriteAsync(Description.Run());
                 });
                 endpoints.MapGet("/uat", async context =>
                 {
+                    await context.Response.WriteAsync(UAT.getQuery());
                     await context.Response.WriteAsync(UAT.Run());
                 });
                 endpoints.MapGet("/env", async context =>
                 {
+                    await context.Response.WriteAsync(Env.getQuery());
                     await context.Response.WriteAsync(Env.Run());
                 });
                 endpoints.MapGet("/sftdev", async context =>
                 {
+                    await context.Response.WriteAsync(SftDev.getQuery());
                     await context.Response.WriteAsync(SftDev.Run());
+                });
+                endpoints.MapGet("/syselement", async context =>
+                {
+                    await context.Response.WriteAsync(SysElements.getQuery());
+                    await context.Response.WriteAsync(SysElements.getElements());
                 });
             });
         }
