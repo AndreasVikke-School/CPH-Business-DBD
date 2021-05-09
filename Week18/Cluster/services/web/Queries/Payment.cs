@@ -6,6 +6,9 @@ namespace web
 {
     public class Payment
     {
+        private static readonly string query = "MATCH(ctl:MvcController { name: \"PaymentController\"} )-->(vw:MvcView) " +
+                                            "MATCH (vw)-->(css:CssFile) " +
+                                            "RETURN {controller: ctl.name, mvc_views: collect(vw.name), css_files: collect(css.name)} as controllers";
         public static string Run()
         {
             using(var databaseConnector = new DatabaseConnector()) {
@@ -13,10 +16,7 @@ namespace web
                 {
                     Dictionary<string, object> results = session.WriteTransaction(tx =>
                     {
-                        var result = tx.Run("MATCH(ctl:MvcController { name: \"PaymentController\"} )-->(vw:MvcView) " +
-                                            "MATCH (vw)-->(css:CssFile) " +
-                                            "RETURN {controller: ctl.name, mvc_views: collect(vw.name), css_files: collect(css.name)} as controllers"
-                                            );
+                        var result = tx.Run(query);
                         return (Dictionary<string, object>)result.Single()[0];
                     });
                     var options = new JsonSerializerOptions
@@ -27,6 +27,11 @@ namespace web
                     return System.Text.Encoding.UTF8.GetString(json);
                 }
             }
+        }
+
+        public static string getQuery()
+        {
+            return  "Result from: " + query + "\n\n";
         }
     }
 }

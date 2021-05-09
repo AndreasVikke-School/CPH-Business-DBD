@@ -55,14 +55,17 @@ namespace web
                 });
                 endpoints.MapGet("/test", async context =>
                 {
+                    await context.Response.WriteAsync(Test.getQuery());
                     await context.Response.WriteAsync(Test.Run());
                 });
                 endpoints.MapGet("/human", async context =>
                 {
+                    await context.Response.WriteAsync(Human.getQuery());
                     await context.Response.WriteAsync(Human.Run());
                 });
                 endpoints.MapGet("/payment", async context =>
                 {
+                    await context.Response.WriteAsync(Payment.getQuery());
                     await context.Response.WriteAsync(Payment.Run());
                 });
                 endpoints.MapGet("/product", async context =>
