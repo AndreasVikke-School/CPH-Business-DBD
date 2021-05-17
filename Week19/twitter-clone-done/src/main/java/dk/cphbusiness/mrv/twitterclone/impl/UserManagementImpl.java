@@ -45,7 +45,7 @@ public class UserManagementImpl implements UserManagement {
             return null;
 
         Map<String, String> fields = jedis.hgetAll(hash);
-        UserOverview uo = new UserOverview() {
+        return new UserOverview() {
             {
                 username = fields.get("username");
                 firstname = fields.get("firstname");
@@ -54,7 +54,6 @@ public class UserManagementImpl implements UserManagement {
                 numFollowing = jedis.smembers("following#" + username).size();
             }
         };
-        return uo;
     }
 
     @Override

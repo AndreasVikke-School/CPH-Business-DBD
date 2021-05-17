@@ -28,18 +28,14 @@ public class PostManagementImpl implements PostManagement {
 
     @Override
     public List<Post> getPosts(String username) {
-        Map<String, String> fields = jedis.hgetAll("posts#" + username);
-        List<Post> posts = fields.keySet().stream()
+        return jedis.hgetAll("posts#" + username).keySet().stream()
             .map(s -> new Post(Long.parseLong(s), fields.get(s))).toList();
-        return posts;
     }
 
     @Override
     public List<Post> getPostsBetween(String username, long timeFrom, long timeTo) {
-        Map<String, String> fields = jedis.hgetAll("posts#" + username);
-        List<Post> posts = fields.keySet().stream()
+        return jedis.hgetAll("posts#" + username).keySet().stream()
             .filter(s -> Long.parseLong(s) >= timeFrom && Long.parseLong(s) <= timeTo)
             .map(s -> new Post(Long.parseLong(s), fields.get(s))).toList();
-        return posts;
     }
 }
