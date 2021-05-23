@@ -24,6 +24,9 @@ services:
     
     webapi:
         build: ./WebAPI
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports: 
@@ -42,6 +45,9 @@ services:
 
     neo4jcore1:
         image: neo4j:4.2-enterprise
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan 
         ports: 
@@ -63,6 +69,9 @@ services:
 
     neo4jcore2:
         image: neo4j:4.2-enterprise
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports:
@@ -84,6 +93,9 @@ services:
 
     neo4jcore3:
         image: neo4j:4.2-enterprise
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports:
@@ -105,6 +117,9 @@ services:
 
     neo4jreadreplica1:
         image: neo4j:4.2-enterprise
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports:
@@ -127,6 +142,9 @@ services:
 
     neo4jreadreplica2:
         image: neo4j:4.2-enterprise
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports:
@@ -149,6 +167,9 @@ services:
 
     redis:
         image: redis:6.2.3
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         command: redis-server --requirepass 1234
@@ -164,6 +185,9 @@ services:
 
     postgres:
         image: postgres:13.3
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports:
@@ -181,6 +205,9 @@ services:
 
     hbase-master:
         image: blueskyareahm/hbase-base:2.1.3
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         command: master
@@ -190,6 +217,9 @@ services:
 
     hbase-regionserver:
         image: blueskyareahm/hbase-base:2.1.3
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         command: regionserver
@@ -198,8 +228,22 @@ services:
             - 16201:16201
             - 16301:16301
 
+    hbase-master:
+        image: blueskyareahm/hbase-base:2.1.3
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
+        networks:
+            - lan
+        command: rest
+        ports:
+            - 17005:8080
+
     zookeeper:
         image: blueskyareahm/hbase-zookeeper:3.4.13
+        mem_limit: 512m
+        mem_reservation: 128M
+        cpus: 0.5
         networks:
             - lan
         ports:
