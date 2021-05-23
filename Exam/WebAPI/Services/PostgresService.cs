@@ -18,6 +18,19 @@ namespace WebAPI.Services
             postgresDatabase = postgresConnector.GetDatabase();
         }
 
+        public async Task<bool> Login(LoginModel loginModel) {
+            using (var cmd = new NpgsqlCommand("SELECT * FROM accounts WHERE email = @email and password = @password", postgresDatabase)) {
+                cmd.Parameters.AddWithValue("email", loginModel.Email);
+                cmd.Parameters.AddWithValue("password", loginModel.Password);
+                
+                using (var reader = await cmd.ExecuteReaderAsync()) {
+                    if(await reader.ReadAsync())
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public async Task<AccountModel> GetAccount(int id) {
             using (var cmd = new NpgsqlCommand("SELECT * FROM accounts WHERE account_id = @id", postgresDatabase)) {
                 cmd.Parameters.AddWithValue("id", id);

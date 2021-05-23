@@ -32,6 +32,16 @@ namespace WebAPI.Controllers
             _postgresIp = _config.GetValue<string>("postgres-ip");
         }
 
+        [HttpPost("login")]
+        public async Task<bool> Login(LoginModel loginModel)
+        {
+            using(RedisService redisService = new RedisService(_redisIp))
+            using(PostgresService postgresService = new PostgresService(_postgresIp)) {
+                redisService.CreateLog(Request, loginModel);
+                return await postgresService.Login(loginModel);
+            }
+        }
+
         [HttpGet("get/{id}")]
         public async Task<AccountModel> GetAccount(int id)
         {

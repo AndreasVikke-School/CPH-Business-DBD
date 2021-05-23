@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 
 CREATE TABLE IF NOT EXISTS profiles (
    	profile_id INT GENERATED ALWAYS AS IDENTITY,
-   	account_id INT,
+   	account_id INT NOT NULL,
    	name varchar(50) NOT NULL,
    	age int NOT NULL,
 	PRIMARY KEY(profile_id),

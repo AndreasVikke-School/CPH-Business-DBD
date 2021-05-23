@@ -25,9 +25,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("get/{key}")]
-        public string Get(string key) {
+        public async Task<string> Get(string key) {
             using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
-                return hBaseService.GetString(key);
+                return await hBaseService.GetString(key);
             }
         }
 
