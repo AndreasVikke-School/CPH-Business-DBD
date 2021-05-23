@@ -6,6 +6,30 @@ using StackExchange.Redis;
 using WebAPI.Connectors;
 using WebAPI.Models;
 
+sealed class MyAttribute : System.Attribute
+{
+    // See the attribute guidelines at
+    //  http://go.microsoft.com/fwlink/?LinkId=85236
+    readonly string positionalString;
+    
+    // This is a positional argument
+    public MyAttribute(string positionalString)
+    {
+        this.positionalString = positionalString;
+        
+        // TODO: Implement code here
+        throw new System.NotImplementedException();
+    }
+    
+    public string PositionalString
+    {
+        get { return positionalString; }
+    }
+    
+    // This is a named argument
+    public int NamedInt { get; set; }
+}
+
 namespace WebAPI.Services
 {
     public class PostgresService : IDisposable
@@ -68,6 +92,56 @@ namespace WebAPI.Services
                 accountModel.Password = null;
                 return accountModel;
             }
+        }
+
+        public async Task<ProfileModel> CreateProfile(int accountId, ProfileModel profileModel) {
+            using (var cmd = new NpgsqlCommand(
+                @"INSERT INTO profiles
+                (account_id, name, age)
+                    VALUES
+                ((SELECT account_id FROM accounts WHERE account_id = @account_id), @name, @age) 
+                    RETURNING profile_id", postgresDatabase)) {
+                        cmd.Parameters.AddWithValue("account_id", accountId);
+                        cmd.Parameters.AddWithValue("name", profileModel.name);
+                        cmd.Parameters.AddWithValue("age", profileModel.age);
+
+                        var id = await cmd.ExecuteScalarAsync();
+                        profileModel.id = (int)id;
+                        return profileModel;
+                    }
+        }
+
+        public async Task<List<ProfileModel>> GetAllProfiles() {
+            using (var cmd = new NpgsqlCommand("SELECT * FROM profiles", postgresDatabase)) {
+                using (var reader = await cmd.ExecuteReaderAsync()) {
+                    List<ProfileModel> profiles = new List<ProfileModel>();
+                    while (await reader.ReadAsync())
+                        profiles.Add(new ProfileModel() {
+                            id = reader.GetInt32(0),
+                            accountId = reader.GetInt32(1),
+                            name = reader.GetString(2),
+                            age = reader.GetInt32(3)
+                        });
+                    return profiles;
+                }
+            }
+        }
+
+        public async Task<ProfileModel> GetProfile(int id) {
+            using (var cmd = new NpgsqlCommand("SELECT * FROM profiles WHERE profile_id = @id", postgresDatabase)) {
+                cmd.Parameters.AddWithValue("id", id);
+                
+                using (var reader = await cmd.ExecuteReaderAsync()) {
+                    if(await reader.ReadAsync())
+                        return new ProfileModel() {
+                            id = reader.GetInt32(0),
+                            accountId = reader.GetInt32(1),
+                            name = reader.GetString(2),
+                            age = reader.GetInt32(3)
+                        };
+                }
+            }
+            return null;
         }
 
         public void Dispose() {
