@@ -1,29 +1,23 @@
-using HBaseNet;
 using System;
-using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace WebAPI.Connectors
 {
     public class HBaseConnector : IDisposable
     {
-        private AdminClient adminClient;
-        private StandardClient standardClient;
+        private readonly HttpClient client;
 
         public HBaseConnector(string hbaseIp) {
-            adminClient = new AdminClient($"{hbaseIp}");
-            standardClient = new StandardClient($"{hbaseIp}");
+            client = new HttpClient();
+            client.BaseAddress = new Uri($"http://{hbaseIp}/");
         }
 
-        public async Task<IAdminClient> GetAdminClient() {
-            return await adminClient.Build();
-        }
-
-        public async Task<IStandardClient> GetStandardClient() {
-            return await standardClient.Build();
+        public HttpClient GetClient () {
+            return client;
         }
 
         public void Dispose() {
-            adminClient.Dispose();
+            client.Dispose();
         }
     }
 }
