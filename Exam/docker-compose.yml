@@ -35,17 +35,17 @@ services:
             - lan
         ports: 
             - 8000:80
-        depends_on:
-            neo4jcore1:
-                condition: service_healthy
-            neo4jcore2:
-                condition: service_healthy
-            neo4jcore3:
-                condition: service_healthy
-            redis:
-                condition: service_healthy
-            postgres:
-                condition: service_healthy
+        # depends_on:
+        #     neo4jcore1:
+        #         condition: service_healthy
+        #     neo4jcore2:
+        #         condition: service_healthy
+        #     neo4jcore3:
+        #         condition: service_healthy
+        #     redis:
+        #         condition: service_healthy
+        #     postgres:
+        #         condition: service_healthy
 
     neo4jcore1:
         image: neo4j:4.2-enterprise

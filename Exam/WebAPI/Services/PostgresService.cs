@@ -6,30 +6,6 @@ using StackExchange.Redis;
 using WebAPI.Connectors;
 using WebAPI.Models;
 
-sealed class MyAttribute : System.Attribute
-{
-    // See the attribute guidelines at
-    //  http://go.microsoft.com/fwlink/?LinkId=85236
-    readonly string positionalString;
-    
-    // This is a positional argument
-    public MyAttribute(string positionalString)
-    {
-        this.positionalString = positionalString;
-        
-        // TODO: Implement code here
-        throw new System.NotImplementedException();
-    }
-    
-    public string PositionalString
-    {
-        get { return positionalString; }
-    }
-    
-    // This is a named argument
-    public int NamedInt { get; set; }
-}
-
 namespace WebAPI.Services
 {
     public class PostgresService : IDisposable
@@ -124,8 +100,10 @@ namespace WebAPI.Services
                     }
         }
 
-        public async Task<List<ProfileModel>> GetAllProfiles() {
-            using (var cmd = new NpgsqlCommand("SELECT * FROM profiles", postgresDatabase)) {
+        public async Task<List<ProfileModel>> GetAllProfilesByAccout(int account_id) {
+            using (var cmd = new NpgsqlCommand("SELECT * FROM profiles WHERE account_id = @id", postgresDatabase)) {
+                cmd.Parameters.AddWithValue("id", account_id);
+
                 using (var reader = await cmd.ExecuteReaderAsync()) {
                     List<ProfileModel> profiles = new List<ProfileModel>();
                     while (await reader.ReadAsync())

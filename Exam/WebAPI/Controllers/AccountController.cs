@@ -22,22 +22,22 @@ namespace WebAPI.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly IConfiguration _config;
         private readonly string _postgresIp;
-        private readonly string _redisIp;
+        private readonly string _hbaseIp;
 
         public AccountController(ILogger<AccountController> logger, IConfiguration config)
         {
             _logger = logger;
             _config = config;
-            _redisIp = _config.GetValue<string>("redis-ip");
+            _hbaseIp = _config.GetValue<string>("hbase-ip");
             _postgresIp = _config.GetValue<string>("postgres-ip");
         }
 
         [HttpPost("login")]
         public async Task<bool> Login(LoginModel loginModel)
         {
-            using(RedisService redisService = new RedisService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
             using(PostgresService postgresService = new PostgresService(_postgresIp)) {
-                redisService.CreateLog(Request, loginModel);
+                await redisService.CreateLog(Request, loginModel);
                 return await postgresService.Login(loginModel);
             }
         }
@@ -45,9 +45,9 @@ namespace WebAPI.Controllers
         [HttpGet("get/{id}")]
         public async Task<AccountModel> GetAccount(int id)
         {
-            using(RedisService redisService = new RedisService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
             using(PostgresService postgresService = new PostgresService(_postgresIp)) {
-                redisService.CreateLog(Request, new { Id = id });
+                await redisService.CreateLog(Request, new { Id = id });
                 return await postgresService.GetAccount(id);
             }
         }
@@ -55,9 +55,9 @@ namespace WebAPI.Controllers
         [HttpGet("get/all")]
         public async Task<List<AccountModel>> GetAllAccounts()
         {
-            using(RedisService redisService = new RedisService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
             using(PostgresService postgresService = new PostgresService(_postgresIp)) {
-                redisService.CreateLog(Request, "");
+                await redisService.CreateLog(Request, "");
                 return await postgresService.GetAllAccounts();
             }
         }
@@ -65,9 +65,9 @@ namespace WebAPI.Controllers
         [HttpPost("create")]
         public async Task<AccountModel> CreateAccount(AccountModel accountModel)
         {
-            using(RedisService redisService = new RedisService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
             using(PostgresService postgresService = new PostgresService(_postgresIp)) {
-                redisService.CreateLog(Request, accountModel);
+                await redisService.CreateLog(Request, accountModel);
                 return await postgresService.CreateAccount(accountModel);
             }
         }

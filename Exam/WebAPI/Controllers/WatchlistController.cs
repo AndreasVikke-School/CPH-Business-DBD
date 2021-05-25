@@ -14,29 +14,27 @@ namespace WebAPI.Controllers
         private readonly ILogger<WatchlistController> _logger;
         private readonly IConfiguration _config;
         private readonly string _hbaseIp;
-        private readonly string _redisIp;
 
         public WatchlistController(ILogger<WatchlistController> logger, IConfiguration config) {
             _logger = logger;
             _config = config;
-            _redisIp = _config.GetValue<string>("redis-ip");
             _hbaseIp = _config.GetValue<string>("hbase-ip");
         }
 
         [HttpGet("get/{profileId}/{movieId}")]
         public async Task<string> Get(string profileId, string movieId) {
-            using(RedisService redisService = new RedisService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
             using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
-                redisService.CreateLog(Request, new { profileId, movieId });
+                await redisService.CreateLog(Request, new { profileId, movieId });
                 return await hBaseService.GetString(profileId, movieId);
             }
         }
 
         [HttpPost("create")]
         public async Task<bool> Post(WatchlistModel watchlistModel) {
-            using(RedisService redisService = new RedisService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
             using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
-                redisService.CreateLog(Request, watchlistModel);
+                await redisService.CreateLog(Request, watchlistModel);
                 return await hBaseService.CreateMovie(watchlistModel);
             }
         }
