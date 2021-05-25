@@ -148,6 +148,128 @@ namespace WebAPI.Services
             return System.Text.Encoding.UTF8.GetString(json);
         }
 
+
+        // SERIES METHODS
+        public bool createSeries(SeriesModel seriesModel){
+            int actorCount = 0; 
+            string actorString = "";
+            string actorRelationship = "";
+            
+            int directorCount = 0;
+            string directorString = "";
+            string directorRelationship = "";
+            
+            int writerCount = 0;
+            string writerString = "";
+            string writerRelationship = "";
+
+            string seasonString = "";
+            string seasonRelationship = "";
+
+            string episodeString = "";
+            string episodeRelationship = "";
+
+            foreach (var actor in seriesModel.actors)
+            {
+                actorString += "MERGE(a" + actorCount + ":Actor {name: '" + actor + "'}) ";
+                actorRelationship += "MERGE (s)<-[:ACTED_IN]-(a" + actorCount + ") ";
+                actorCount++;
+            }
+
+            foreach (var director in seriesModel.directors)
+            {
+                    directorString += "MERGE(d" + directorCount + ":Director {name: '" + director + "'}) ";
+                    directorRelationship += "MERGE (s)<-[:DIRECTOR_OF]-(d" + directorCount + ") ";
+                    directorCount++;
+            }
+
+            foreach (var writer in seriesModel.writers)
+            {
+                    writerString += "MERGE(w" + writerCount + ":Writer {name: '" + writer + "'}) ";
+                    writerRelationship += "MERGE (s)<-[:WRITER_OF]-(w" + writerCount + ") ";
+                    writerCount++;
+            }
+
+            for (int season = 1; season <= seriesModel.seasons; season++)
+            {
+                    seasonString += "MERGE("+ seriesModel.Title+"Season" + season + ":Season {title: 'Season " + season + "', series:'"+seriesModel.Title+"'}) ";
+                    seasonRelationship += "MERGE (s)<-[:SEASON_OF]-("+ seriesModel.Title+"Season" + season + ") ";
+                    for (int episodeNum = 1; episodeNum <= 8; episodeNum++) 
+                    {
+                        episodeString += "MERGE("+ seriesModel.Title+"EpisodeS" + season + "E"+ episodeNum +":Episode {series:'"+seriesModel.Title+"', episode:'" + episodeNum + "', season:'"+season+"'}) ";
+                        episodeRelationship += "MERGE ("+ seriesModel.Title+"Season" + season + ")<-[:EPISODE_OF]-("+ seriesModel.Title+"EpisodeS" + season + "E" + episodeNum + ") ";
+                    }
+            }
+
+            var create = neo4jDatabase.WriteTransaction(tx =>
+            {
+                var result = tx.Run($"CREATE (s:Series) " +
+                                    "SET s.title = $title " +
+                                    "SET s.releaseYear = $releaseYear " +
+                                    "SET s.description = $description " +
+                                    "SET s.numOfSeasons =$numOfSeasons " +
+                                    "MERGE(g:Genre {genre: $genre}) " +
+                                    actorString + directorString + writerString + seasonString + episodeString + 
+                                    actorRelationship + directorRelationship + writerRelationship + seasonRelationship + episodeRelationship +
+                                    "MERGE (s)-[:Genre]->(g) " +
+                                    "RETURN s.release", new {title = seriesModel.Title,
+                                                            releaseYear = seriesModel.ReleaseYear, 
+                                                            description = seriesModel.Description,
+                                                            genre = seriesModel.genre,
+                                                            numOfSeasons = seriesModel.seasons});
+                return result.Single()[0].As<string>();
+            });
+            return true; 
+            
+        }
+
+         public string GetSeries(String seriesTitle){
+            Dictionary<string, object> results = neo4jDatabase.WriteTransaction(tx =>
+            {
+                var result = tx.Run($"MATCH (s:Series)--(g:Genre) WHERE s.title = $seriesTitle return " + 
+                                    "{title: s.title, release: s.releaseYear, description: s.description, genre: g.genre, numOfSeasons: s.numOfSeasons} as Series", new{seriesTitle = seriesTitle});
+                return (Dictionary<string, object>)result.Single()[0];
+            });
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            byte[] json = JsonSerializer.SerializeToUtf8Bytes(results, options);
+            return System.Text.Encoding.UTF8.GetString(json);
+        }
+
+        public string GetAllSeries(){
+            List<Dictionary<string, object>> results = neo4jDatabase.WriteTransaction(tx =>
+            {
+                var result = tx.Run($"MATCH (s:Series)-->(g:Genre) RETURN " + 
+                                    "{title: s.title, release: s.releaseYear, description: s.description, genre: g.genre, numOfSeasons: s.numOfSeasons} as Series");
+                return result.Select(r => (Dictionary<string, object>) r[0]).ToList();
+            });
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            byte[] json = JsonSerializer.SerializeToUtf8Bytes(results, options);
+            return System.Text.Encoding.UTF8.GetString(json);
+        }
+
+        public string getSeriesByGenre(string genreName){
+            List<Dictionary<string, object>> results = neo4jDatabase.WriteTransaction(tx =>
+            {
+                var result = tx.Run($"MATCH (s:Series)--(g:Genre) " +
+                                    "WHERE g.genre = $genre " + 
+                                    "return {genre: s.genre, series: s.title, release: s.releaseYear, description: s.description, numOfSeasons: s.numOfSeasons} as Series",
+                                    new {genre = genreName});
+                return result.Select(r => (Dictionary<string, object>) r[0]).ToList();
+            });
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            byte[] json = JsonSerializer.SerializeToUtf8Bytes(results, options);
+            return System.Text.Encoding.UTF8.GetString(json);
+        }
+
         public void Dispose() {
             neo4jDatabase.Dispose();
         }
