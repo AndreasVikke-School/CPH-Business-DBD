@@ -31,11 +31,11 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("set/{key}/{value}")]
-        public async Task<bool> Post(string key, string value) {
-            using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
-                return await hBaseService.SetString(key, value);
-            }
-        }
+        // [HttpPost("set/{key}/{value}")]
+        // public async Task<bool> Post(string key, string value) {
+        //     using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
+        //         return await hBaseService.SetString(key, value);
+        //     }
+        // }
     }
 }

@@ -30,20 +30,20 @@ namespace WebAPI.Services
             return null;
         }
 
-        public async Task<bool> CreateMovie(WatchlistModel watchlistModel) {
-            var test = await hbaseClient.PostAsync("/users/schema", new StringContent("<TableSchema name=\"users\"><ColumnSchema name=\"cf\" /></TableSchema>", Encoding.UTF8, "text/xml"));
+        // public async Task<bool> CreateMovie(WatchlistModel watchlistModel) {
+        //     var test = await hbaseClient.PostAsync("/users/schema", new StringContent("<TableSchema name=\"users\"><ColumnSchema name=\"cf\" /></TableSchema>", Encoding.UTF8, "text/xml"));
 
-            var data = $@"
-                <CellSet>
-                    <Row key='{System.Convert.ToBase64String(Encoding.UTF8.GetBytes(key))}'>
-                        <Cell column='{System.Convert.ToBase64String(Encoding.UTF8.GetBytes("cf:e"))}'>{System.Convert.ToBase64String(Encoding.UTF8.GetBytes(value))}</Cell>
-                    </Row>
-                </CellSet>
-            ";
+        //     var data = $@"
+        //         <CellSet>
+        //             <Row key='{System.Convert.ToBase64String(Encoding.UTF8.GetBytes(key))}'>
+        //                 <Cell column='{System.Convert.ToBase64String(Encoding.UTF8.GetBytes("cf:e"))}'>{System.Convert.ToBase64String(Encoding.UTF8.GetBytes(value))}</Cell>
+        //             </Row>
+        //         </CellSet>
+        //     ";
 
-            var test2 = await hbaseClient.PutAsync($"/users/{key}", new StringContent(data, Encoding.UTF8, "text/xml"));
-            return true;
-        }
+        //     var test2 = await hbaseClient.PutAsync($"/users/{key}", new StringContent(data, Encoding.UTF8, "text/xml"));
+        //     return true;
+        // }
 
         // public async Task<bool> SetString(string key, string value) {
         //     var test = await hbaseClient.PostAsync("/users/schema", new StringContent("<TableSchema name=\"users\"><ColumnSchema name=\"cf\" /></TableSchema>", Encoding.UTF8, "text/xml"));

@@ -48,15 +48,53 @@ namespace WebAPI.Services
         }
 
         public bool createMovie(MovieModel movieModel){
+            int actorCount = 0; 
+            string actorString = "";
+            string actorRelationship = "";
+            
+            int directorCount = 0;
+            string directorString = "";
+            string directorRelationship = "";
+            
+            int writerCount = 0;
+            string writerString = "";
+            string writerRelationship = "";
+
+            foreach (var actor in movieModel.actors)
+            {
+                actorString += "MERGE(a" + actorCount + ":Actor {name: '" + actor + "'}) ";
+                actorRelationship += "MERGE (m)-[:Actor]->(a" + actorCount + ") ";
+                actorCount++;
+            }
+
+            foreach (var director in movieModel.directors)
+            {
+                    directorString += "MERGE(d" + directorCount + ":Director {name: '" + director + "'}) ";
+                    directorRelationship += "MERGE (m)-[:Director]->(d" + directorCount + ") ";
+                    directorCount++;
+            }
+
+            foreach (var writer in movieModel.writers)
+            {
+                    writerString += "MERGE(w" + writerCount + ":Writer {name: '" + writer + "'}) ";
+                    writerRelationship += "MERGE (m)-[:Writer]->(w" + writerCount + ") ";
+                    writerCount++;
+            }
+
             var create = neo4jDatabase.WriteTransaction(tx =>
             {
-                var result = tx.Run($@"CREATE (m:Movie) 
-                                    SET m.title = $title 
-                                    SET m.releaseYear = $releaseYear 
-                                    SET m.description = $description 
-                                    RETURN m.release", new {title = movieModel.Title,
+                var result = tx.Run($"CREATE (m:Movie) " +
+                                    "SET m.title = $title " +
+                                    "SET m.releaseYear = $releaseYear " +
+                                    "SET m.description = $description " +
+                                    "MERGE(g:Genre {genre: $genre}) " +
+                                    actorString + directorString + writerString +
+                                    actorRelationship + directorRelationship + writerRelationship +
+                                    "MERGE (m)-[:Genre]->(g) " +
+                                    "RETURN m.release", new {title = movieModel.Title,
                                                             releaseYear = movieModel.ReleaseYear, 
-                                                            description = movieModel.Description});
+                                                            description = movieModel.Description,
+                                                            genre = movieModel.genre});
                 return result.Single()[0].As<string>();
             });
             return true; 
@@ -70,8 +108,6 @@ namespace WebAPI.Services
                                     "{title: m.title, release: m.releaseYear, description: m.description, genre: g.genre} as Movie", new{movieTitle = movieTitle});
                 return (Dictionary<string, object>)result.Single()[0];
             });
-            // New Query for genre.
-            // MATCH (Movie {title: "Saw_5"})--(Genre) RETURN {title: Movie.title, release: Movie.releaseYear, description: Movie.description, genre: Genre.genre}
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -93,30 +129,6 @@ namespace WebAPI.Services
             };
             byte[] json = JsonSerializer.SerializeToUtf8Bytes(results, options);
             return System.Text.Encoding.UTF8.GetString(json);
-        }
-
-        public bool CreateGenre(string genreName){
-            var create = neo4jDatabase.WriteTransaction(tx =>
-            {
-                var result = tx.Run($@"CREATE (g:Genre) 
-                                    SET g.genre = $genre 
-                                    RETURN g.genre", new {genre = genreName});
-                return result.Single()[0].As<string>();
-            });
-            return true;
-        }
-
-        public bool SetGenreOnMovie(String movieTitle, String genreName){
-            var create = neo4jDatabase.WriteTransaction(tx =>
-            {
-                var result = tx.Run($@"MATCH (m:Movie), (g:Genre) 
-                                     WHERE m.title = $movieTitle
-                                     AND g.genre = $genreName
-                                     MERGE (m)-[:Genre]->(g)", new {movieTitle = movieTitle, genreName = genreName});
-                return result;
-            });
-
-            return true; 
         }
 
         public string getMoviesByGenre(string genreName){
