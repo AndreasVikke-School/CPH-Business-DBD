@@ -18,35 +18,6 @@ namespace WebAPI.Services
             neo4jDatabase = neo4JConnector.GetDatabase();
         }
 
-        public string GetString(string key) {
-            string query = $"MATCH (a:{key}) " +
-                            "RETURN {value: a.value} as value";
-
-            Dictionary<string, object> results = neo4jDatabase.WriteTransaction(tx =>
-            {
-                var result = tx.Run(query);
-                return (Dictionary<string, object>)result.Single()[0];
-            });
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-            byte[] json = JsonSerializer.SerializeToUtf8Bytes(results, options);
-            return System.Text.Encoding.UTF8.GetString(json);
-        }
-
-        public bool SetString(string key, string value) {
-            var greeting = neo4jDatabase.WriteTransaction(tx =>
-            {
-                var result = tx.Run($"CREATE (a:{key}) " +
-                                    "SET a.value = $value " +
-                                    "RETURN a.value",
-                    new {value});
-                return result.Single()[0].As<string>();
-            });
-            return true;
-        }
-
         public bool createMovie(MovieModel movieModel){
             int actorCount = 0; 
             string actorString = "";
@@ -258,7 +229,7 @@ namespace WebAPI.Services
             {
                 var result = tx.Run($"MATCH (s:Series)--(g:Genre) " +
                                     "WHERE g.genre = $genre " + 
-                                    "return {genre: s.genre, series: s.title, release: s.releaseYear, description: s.description, numOfSeasons: s.numOfSeasons} as Series",
+                                    "return {genre: g.genre, series: s.title, release: s.releaseYear, description: s.description, numOfSeasons: s.numOfSeasons} as Series",
                                     new {genre = genreName});
                 return result.Select(r => (Dictionary<string, object>) r[0]).ToList();
             });

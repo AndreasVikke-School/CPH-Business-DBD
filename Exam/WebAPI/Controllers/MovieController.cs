@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,69 +16,72 @@ namespace WebAPI.Controllers
         private readonly IConfiguration _config;
         private readonly string _neo4jIp;
         private readonly string _hbaseIp;
+        private readonly string _redisIp;
+
 
         public MovieController(ILogger<MovieController> logger, IConfiguration config){
             _logger = logger;
             _config = config;
             _hbaseIp = _config.GetValue<string>("hbase-ip");
             _neo4jIp = _config.GetValue<string>("neo4j-ip");
+            _redisIp = _config.GetValue<string>("redis-ip");
         }
 
-        [HttpPost("create/movie")]
+        [HttpPost("create")]
         public async Task<bool> createMovie(MovieModel movieModel){
-            using(LogService redisService = new LogService(_hbaseIp))
+            using(ChacheService chacheService = new ChacheService(_redisIp))
+            using(LogService logService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-                await redisService.CreateLog(Request, movieModel);
+                await logService.CreateLog(Request, movieModel);
+
+                chacheService.FlushChache(ChacheTypes.Movie);
+                chacheService.FlushChache(ChacheTypes.MovieByGenre);
+
                 return neo4jService.createMovie(movieModel);
             }
         }
         
-        [HttpGet("get/movie/{movieTitle}")]
+        [HttpGet("get/{movieTitle}")]
         public async Task<string> getMovie(string movieTitle){
-            using(LogService redisService = new LogService(_hbaseIp))
+            using(LogService logService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-                await redisService.CreateLog(Request, movieTitle);
+                await logService.CreateLog(Request, movieTitle);
                 return neo4jService.GetMovie(movieTitle);
             }
         }
 
-        [HttpGet("get/movie/all")]
+        [HttpGet("get/all")]
         public async Task<string> getAllMovies(){
-            using(LogService redisService = new LogService(_hbaseIp))
+            using(ChacheService chacheService = new ChacheService(_redisIp))
+            using(LogService logService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-                await redisService.CreateLog(Request, "");
-                return neo4jService.GetAllMovies();
+                await logService.CreateLog(Request, "");
+
+                var chache = chacheService.GetChache(ChacheTypes.Movie);
+                if(chache != null)
+                    return chache;
+
+                var movies = neo4jService.GetAllMovies();
+                chacheService.CreateChache(ChacheTypes.Movie, movies);
+                return movies;
             }
         }
 
-        [HttpGet("get/movie/allByGenre/{genreName}")]
-        public async Task<string> getMoviesByGenre(string genreName){
-            using(LogService redisService = new LogService(_hbaseIp))
+        [HttpGet("get/allByGenre/{genreName}")]
+        public async Task<string> getMoviesByGenre(string genreName) {
+            using(ChacheService chacheService = new ChacheService(_redisIp))
+            using(LogService logService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-                await redisService.CreateLog(Request, "");
-                return neo4jService.getMoviesByGenre(genreName);
+                await logService.CreateLog(Request, "");
+
+                var chache = chacheService.GetChache(ChacheTypes.MovieByGenre);
+                if(chache != null)
+                    return chache;
+
+                var movies = neo4jService.getMoviesByGenre(genreName);
+                chacheService.CreateChache(ChacheTypes.MovieByGenre, movies);
+                return movies;
             }
         }
-
-
-
-        // [HttpPost("create/genre")]
-        // public bool createGenre(string genreName){
-        //     using(RedisService redisService = new RedisService(_redisIp))
-        //     using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-        //         redisService.CreateLog(Request, genreName);
-        //         return neo4jService.CreateGenre(genreName);
-        //     }
-        // }
-
-        // [HttpPost("set/genre")]
-        // public bool setGenreOnMovie(string movieTitle, string genreName){
-        //     using(RedisService redisService = new RedisService(_redisIp))
-        //     using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-        //         redisService.CreateLog(Request, movieTitle + " and " + genreName);
-        //         return neo4jService.SetGenreOnMovie(movieTitle, genreName);
-        //     }
-        // }
-
     }
 }

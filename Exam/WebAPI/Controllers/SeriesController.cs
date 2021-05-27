@@ -15,24 +15,31 @@ namespace WebAPI.Controllers
         private readonly IConfiguration _config;
         private readonly string _neo4jIp;
         private readonly string _hbaseIp;
+        private readonly string _redisIp;
 
         public SeriesController(ILogger<SeriesController> logger, IConfiguration config){
             _logger = logger;
             _config = config;
             _hbaseIp = _config.GetValue<string>("hbase-ip");
             _neo4jIp = _config.GetValue<string>("neo4j-ip");
+            _redisIp = _config.GetValue<string>("redis-ip");
         }
 
-        [HttpPost("create/series")]
+        [HttpPost("create")]
         public async Task<bool> createSeries(SeriesModel seriesModel){
+            using(ChacheService chacheService = new ChacheService(_redisIp))
             using(LogService redisService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
                 await redisService.CreateLog(Request, seriesModel);
+
+                chacheService.FlushChache(ChacheTypes.Series);
+                chacheService.FlushChache(ChacheTypes.SeriesByGenre);
+
                 return neo4jService.createSeries(seriesModel);
             }
         }
         
-        [HttpGet("get/series/{seriesTitle}")]
+        [HttpGet("get/{seriesTitle}")]
         public async Task<string> getSeries(string seriesTitle){
             using(LogService redisService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
@@ -41,21 +48,37 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("get/series/all")]
+        [HttpGet("get/all")]
         public async Task<string> getAllSeries(){
+            using(ChacheService chacheService = new ChacheService(_redisIp))
             using(LogService redisService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
                 await redisService.CreateLog(Request, "");
-                return neo4jService.GetAllSeries();
+
+                var chache = chacheService.GetChache(ChacheTypes.Series);
+                if(chache != null)
+                    return chache;
+
+                var series = neo4jService.GetAllSeries();
+                chacheService.CreateChache(ChacheTypes.Series, series);
+                return series;
             }
         }
 
-        [HttpGet("get/series/allByGenre/{genreName}")]
+        [HttpGet("get/allByGenre/{genreName}")]
         public async Task<string> getSeriesByGenre(string genreName){
+            using(ChacheService chacheService = new ChacheService(_redisIp))
             using(LogService redisService = new LogService(_hbaseIp))
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
                 await redisService.CreateLog(Request, "");
-                return neo4jService.getSeriesByGenre(genreName);
+
+                var chache = chacheService.GetChache(ChacheTypes.SeriesByGenre);
+                if(chache != null)
+                    return chache;
+
+                var series = neo4jService.getSeriesByGenre(genreName);
+                chacheService.CreateChache(ChacheTypes.Series, series);
+                return series;
             }
         }
 

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WebAPI.Connectors;
 using WebAPI.Models;
 
@@ -18,11 +19,18 @@ namespace WebAPI.Services
             hbaseClient = hBaseConnector.GetClient();
         }
 
-        public async Task<string> GetString(string profileId, string movieId) {
+        public async Task<HBaseResult> Get(string profileId, string movieId) {
             hbaseClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var response = await hbaseClient.GetAsync($"/watchlist/{profileId}/{movieId}");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<HBaseResult>(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task<HBaseResult> GetAllByProfile(string profileId) {
+            hbaseClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await hbaseClient.GetAsync($"/watchlist/{profileId}");
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<HBaseResult>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<bool> CreateMovie(WatchlistModel watchlistModel) {

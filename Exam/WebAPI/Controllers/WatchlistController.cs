@@ -22,16 +22,25 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("get/{profileId}/{movieId}")]
-        public async Task<string> Get(string profileId, string movieId) {
+        public async Task<HBaseResult> Get(string profileId, string movieId) {
             using(LogService redisService = new LogService(_hbaseIp))
             using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
                 await redisService.CreateLog(Request, new { profileId, movieId });
-                return await hBaseService.GetString(profileId, movieId);
+                return await hBaseService.Get(profileId, movieId);
+            }
+        }
+
+        [HttpGet("get/{profileId}")]
+        public async Task<HBaseResult> GetAllByProfile(string profileId) {
+            using(LogService redisService = new LogService(_hbaseIp))
+            using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
+                await redisService.CreateLog(Request, new { profileId });
+                return await hBaseService.GetAllByProfile(profileId);
             }
         }
 
         [HttpPost("create")]
-        public async Task<bool> Post(WatchlistModel watchlistModel) {
+        public async Task<bool> Create(WatchlistModel watchlistModel) {
             using(LogService redisService = new LogService(_hbaseIp))
             using(HBaseService hBaseService = new HBaseService(_hbaseIp)) {
                 await redisService.CreateLog(Request, watchlistModel);

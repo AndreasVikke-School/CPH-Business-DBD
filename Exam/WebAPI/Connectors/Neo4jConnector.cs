@@ -9,7 +9,7 @@ namespace WebAPI.Connectors
         private readonly IDriver _driver;
 
         public Neo4jConnector(string neo4jIp) {
-            _driver = GraphDatabase.Driver($"{neo4jIp}:7688", AuthTokens.Basic("neo4j", "1234"));
+            _driver = GraphDatabase.Driver($"{neo4jIp}", AuthTokens.Basic("neo4j", "1234"));
         }
 
         public ISession GetDatabase() {

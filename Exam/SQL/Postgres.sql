@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 INSERT INTO accounts(email, password, firstname, lastname)
 VALUES('test@test.dk', '1234', 'Andreas', 'Vikke'),
       ('test2@test.dk', '1234', 'Martin', 'Frederiksen'),
-      ('test3@test.dk', '1234', 'William', 'Hussfeldt')
+      ('test3@test.dk', '1234', 'William', 'Hussfeldt'),
       ('test4@test.dk', '1234', 'Asger', 'Sørensen');	   
 	   
 INSERT INTO profiles(account_id, name, age)

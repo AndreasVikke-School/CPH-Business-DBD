@@ -96,6 +96,7 @@ namespace WebAPI.Services
 
                         var id = await cmd.ExecuteScalarAsync();
                         profileModel.id = (int)id;
+                        profileModel.accountId = (int)accountId;
                         return profileModel;
                     }
         }

@@ -23,6 +23,7 @@ namespace WebAPI.Controllers
         private readonly IConfiguration _config;
         private readonly string _postgresIp;
         private readonly string _hbaseIp;
+        private readonly string _redisIp;
 
         public AccountController(ILogger<AccountController> logger, IConfiguration config)
         {
@@ -30,6 +31,7 @@ namespace WebAPI.Controllers
             _config = config;
             _hbaseIp = _config.GetValue<string>("hbase-ip");
             _postgresIp = _config.GetValue<string>("postgres-ip");
+            _redisIp = _config.GetValue<string>("redis-ip");
         }
 
         [HttpPost("login")]
