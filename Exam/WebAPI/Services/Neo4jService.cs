@@ -241,6 +241,68 @@ namespace WebAPI.Services
             return System.Text.Encoding.UTF8.GetString(json);
         }
 
+        public bool setupSeriesMovies(){
+
+            var create = neo4jDatabase.WriteTransaction(tx =>
+            {
+                // var result = tx.Run($"CREATE (theWitcher:Series) " + 
+                //                     "SET theWitcher.title = The Witcher "+
+                //                     "SET theWitcher.releaseYear = 2020 " +
+                //                     "SET theWitcher.genre = Fantasy " +
+                //                     "SET theWitcher.description = Blood and spatter " +
+                //                     "SET theWitcher.numOfSeasons = 1 " +
+                //                     "CREATE (invincible:Series) " + 
+                //                     "SET title = Invincible releaseYear: "2021", genre:"Superhero", description: "Exciting superhero story", numOfSeasons: 8})
+
+                                    
+                //                     );
+                // return result.Single()[0].As<string>();
+                var result = tx.Run(@"
+                                    //Series
+                                    MERGE (theWitcher:Series {title: 'The Witcher', releaseYear: '2020', description: 'Blood and spatter', numOfSeasons: 1}) 
+                                    MERGE (invincible:Series {title: 'Invincible', releaseYear: '2021', description: 'Exciting superhero story', numOfSeasons: 8}) 
+                                    MERGE (friends:Series {title: 'Friends', releaseYear: '1994', description: 'A boring pack of friends', numOfSeasons: 10})  
+                                    
+                                    //Movies
+                                    MERGE(klovn:Movies {title: 'Klovn', releaseYear: '2010', description: 'Award winning danish comedy.'})
+
+                                    //Series Actors
+                                    MERGE (cavill:Actor {name: 'Henry Cavill', age: '38'})  
+                                    MERGE (yeun:Actor {name: 'Steven Yeun', age: '38'})  
+                                    MERGE (simmons:Actor {name: 'Jonathan Kimble Simmons', age: '66'})  
+                                    MERGE (aniston:Actor {name: 'Jennifer Aniston', age: '52'})  
+
+                                    //Genres create
+                                    MERGE (fantasy:Genre {genre:'Fantasy'})
+                                    MERGE (superhero:Genre {genre:'Superhero'})
+                                    MERGE (comedy:Genre {genre:'Comedy'})
+
+                                    //Genres set relations
+                                    MERGE (fantasy)-[:GENRE_OF]->(theWitcher)
+                                    MERGE (superhero)-[:GENRE_OF]->(invincible)
+                                    MERGE (comedy)-[:GENRE_OF]->(friends)
+
+                                    //Actors set relations
+                                    MERGE (cavill)-[:ACTED_IN]->(theWitcher)  
+                                    MERGE (simmons)-[:ACTED_IN]->(invincible)  
+                                    MERGE (yeun)-[:ACTED_IN]->(invincible) 
+                                    MERGE (aniston)-[:ACTED_IN]->(friends)  
+
+                                    //Foreach loop for seasons episodes
+                                    WITH [invincible, theWitcher, friends] as seriesList  
+                                    FOREACH(series in seriesList |   
+                                    FOREACH(seasonNum in range(1, series.numOfSeasons) |  
+                                            MERGE (s:Season {series: series.title, season:seasonNum})-[:SEASON_OF]->(series)  
+                                            FOREACH(episodeNum in range(1, 8) |
+                                                MERGE (e:Episode {series: series.title, episode:episodeNum, season: seasonNum})-[:EPISODE_OF]->(s))))
+                                                RETURN seriesList");
+                return result.Single()[0].As<string>();
+            });
+            return true; 
+            
+        }
+
+
         public void Dispose() {
             neo4jDatabase.Dispose();
         }

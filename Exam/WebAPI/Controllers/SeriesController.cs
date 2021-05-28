@@ -82,6 +82,20 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPost("setup")]
+        public async Task<bool> createSeriesMovies(){
+            using(ChacheService chacheService = new ChacheService(_redisIp))
+            using(LogService redisService = new LogService(_hbaseIp))
+            using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
+                await redisService.CreateLog(Request, "");
+
+                chacheService.FlushChache(ChacheTypes.Series);
+                chacheService.FlushChache(ChacheTypes.SeriesByGenre);
+
+                return neo4jService.setupSeriesMovies();
+            }
+        }
+
         
     } 
 }

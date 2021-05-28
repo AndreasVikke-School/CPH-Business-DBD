@@ -68,8 +68,8 @@ services:
             interval: 2s
             timeout: 5s
             retries: 40
-        volumes:
-            - ./neo4j_database:/data/databases/neo4j
+        #volumes:
+        #    - ./neo4j_database:/data/databases/neo4j
 
     neo4jcore2:
         image: neo4j:4.2-enterprise
