@@ -245,18 +245,6 @@ namespace WebAPI.Services
 
             var create = neo4jDatabase.WriteTransaction(tx =>
             {
-                // var result = tx.Run($"CREATE (theWitcher:Series) " + 
-                //                     "SET theWitcher.title = The Witcher "+
-                //                     "SET theWitcher.releaseYear = 2020 " +
-                //                     "SET theWitcher.genre = Fantasy " +
-                //                     "SET theWitcher.description = Blood and spatter " +
-                //                     "SET theWitcher.numOfSeasons = 1 " +
-                //                     "CREATE (invincible:Series) " + 
-                //                     "SET title = Invincible releaseYear: "2021", genre:"Superhero", description: "Exciting superhero story", numOfSeasons: 8})
-
-                                    
-                //                     );
-                // return result.Single()[0].As<string>();
                 var result = tx.Run(@"
                                     //Series
                                     MERGE (theWitcher:Series {title: 'The Witcher', releaseYear: '2020', description: 'Blood and spatter', numOfSeasons: 1}) 
@@ -264,6 +252,8 @@ namespace WebAPI.Services
                                     MERGE (friends:Series {title: 'Friends', releaseYear: '1994', description: 'A boring pack of friends', numOfSeasons: 10})  
                                     
                                     //Movies
+                                    MERGE(pansLabyrint:Movies {title: 'Pans labyrint', releaseYear: '2006', description: 'Hvad fanden handler den om.'})
+                                    MERGE(thor:Movies {title: 'Thor', releaseYear: '2016', description: 'Marvel Superhero Movie.'})
                                     MERGE(klovn:Movies {title: 'Klovn', releaseYear: '2010', description: 'Award winning danish comedy.'})
 
                                     //Series Actors
@@ -272,21 +262,45 @@ namespace WebAPI.Services
                                     MERGE (simmons:Actor {name: 'Jonathan Kimble Simmons', age: '66'})  
                                     MERGE (aniston:Actor {name: 'Jennifer Aniston', age: '52'})  
 
+                                    //Movie Actors
+                                    MERGE (hvam:Actor {name: 'Frank Hvam', age: '46'})  
+                                    MERGE (hemsworth:Actor {name: 'Chris Hemsworth', age: '37'})  
+                                    MERGE (baquero,:Actor {name: 'Ivana Baquero', age: '27'})  
+
                                     //Genres create
                                     MERGE (fantasy:Genre {genre:'Fantasy'})
                                     MERGE (superhero:Genre {genre:'Superhero'})
                                     MERGE (comedy:Genre {genre:'Comedy'})
 
                                     //Genres set relations
+
+                                    //Series
                                     MERGE (fantasy)-[:GENRE_OF]->(theWitcher)
                                     MERGE (superhero)-[:GENRE_OF]->(invincible)
                                     MERGE (comedy)-[:GENRE_OF]->(friends)
 
+                                    //Movies
+                                    MERGE (fantasy)-[:GENRE_OF]->(pansLabyrint)
+                                    MERGE (superhero)-[:GENRE_OF]->(thor)
+                                    MERGE (comedy)-[:GENRE_OF]->(klovn)
+
+                                    //End genre relationship 
+
+
                                     //Actors set relations
+
+                                    //Series
                                     MERGE (cavill)-[:ACTED_IN]->(theWitcher)  
                                     MERGE (simmons)-[:ACTED_IN]->(invincible)  
                                     MERGE (yeun)-[:ACTED_IN]->(invincible) 
                                     MERGE (aniston)-[:ACTED_IN]->(friends)  
+
+                                    //Movies
+                                    MERGE (hvam)-[:ACTED_IN]->(klovn)  
+                                    MERGE (hemsworth)-[:ACTED_IN]->(thor)  
+                                    MERGE (baquero)-[:ACTED_IN]->(pansLabyrint) 
+
+                                    //End actor relationship
 
                                     //Foreach loop for seasons episodes
                                     WITH [invincible, theWitcher, friends] as seriesList  
