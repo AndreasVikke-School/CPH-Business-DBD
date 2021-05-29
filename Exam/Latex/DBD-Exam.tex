@@ -1,0 +1,76 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[subpreambles=true]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[danish]{babel}
+\usepackage[margin=2.5cm, headheight=36pt]{geometry}
+\usepackage{subcaption}
+\usepackage[pdfpagelabels]{hyperref}
+\usepackage[nottoc]{tocbibind}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{enumerate}
+\usepackage{import}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\setlength {\marginparwidth }{2cm}
+\usepackage{todonotes}
+\usepackage{url}
+
+% Code Listing
+\usepackage[most]{tcolorbox}
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage{xcolor}
+\import{codecolors/}{csharp.tex}
+\import{codecolors/}{dos.tex}
+
+\graphicspath{ {./images/} }
+
+\usepackage{hyperref}
+\Urlmuskip=0mu  plus 10mu
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+
+\title{Thesis Tempalte}
+\author{
+    Andreas Zoega Vesterborg Vikke\\
+    \texttt{cph-av105}
+    \and
+    (Asger Hermind Sørensen)\\
+    \texttt{cph-as466}
+    \and
+    (Martin Eli Frederiksen)\\
+    \texttt{cph-mf237}
+    \and
+    (William Sehested Huusfeldt)\\
+    \texttt{cph-wh106}
+}
+\date{Februar 2021}
+
+\begin{document}
+
+\listoftodos
+\todo{Remove List Todo Package Before Submission}
+
+\maketitle
+\tableofcontents
+
+\chapter{Examples}
+\import{sections/}{how_to_run.tex}
+\import{sections/}{api.tex}
+\import{sections/}{cap.tex}
+\import{sections/}{neo4j.tex}
+\import{sections/}{postgres.tex}
+\import{sections/}{hbase.tex}
+\import{sections/}{redis.tex}
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{dbd-references}
+
+\end{document}

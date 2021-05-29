@@ -1,0 +1,10 @@
+\section{How To Run}
+Applikationen er lavet som en docker-compose fil for at gøre det nemmere og mere robust at køre. Som det første skal man sætte hvor meget RAM og CPU containerne må bruge. Dette gøres ved at åbne "docker-compose.yml" og sætte "mem\_limit" og "cpus" under "x-shared-limit". Dette limit er per container, og denne compose vil opsætte 12 containere. Ved en mem\_lmit på 512m og cpus på 0.5, vil der blive brugt 6gb memory samt 6 CPU.
+\
+Efter at have sat limits kan man starte applikationen med denne kommando:
+\begin{tcolorbox}
+    \text docker-compose up
+\end{tcolorbox}
+\textit^^ Vigtig at have bindestreg mellem docker og compose, for at gøre brug af de satte limits.'
+
+Kommando vil tage noget tid at køre (omkring 5-10 minutter afhængig af hvor meget du har allokeret i step 1). Når du ser beskeden “All Databases is up and running….” kan du åbne din browser og navigere til: \url{http://localhost:8000/swagger} Hvor der vil blive fremvist et Swagger API med alle de kald der er opsat. Under API kan du se hvor de forskellige endpoints føre dig hen og hvilke databaser de snakker med.
