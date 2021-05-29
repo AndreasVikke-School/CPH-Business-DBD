@@ -54,7 +54,7 @@ namespace WebAPI.Services
 
             var create = neo4jDatabase.WriteTransaction(tx =>
             {
-                var result = tx.Run($"CREATE (m:Movie) " +
+                var result = tx.Run($"CREATE (m:Movies) " +
                                     "SET m.title = $title " +
                                     "SET m.releaseYear = $releaseYear " +
                                     "SET m.description = $description " +
@@ -75,7 +75,7 @@ namespace WebAPI.Services
         public string GetMovie(String movieTitle){
             Dictionary<string, object> results = neo4jDatabase.WriteTransaction(tx =>
             {
-                var result = tx.Run($"MATCH (m:Movie)--(g:Genre) WHERE m.title = $movieTitle return " + 
+                var result = tx.Run($"MATCH (m:Movies)--(g:Genre) WHERE m.title = $movieTitle return " + 
                                     "{title: m.title, release: m.releaseYear, description: m.description, genre: g.genre} as Movie", new{movieTitle = movieTitle});
                 return (Dictionary<string, object>)result.Single()[0];
             });
@@ -90,7 +90,7 @@ namespace WebAPI.Services
         public string GetAllMovies(){
             List<Dictionary<string, object>> results = neo4jDatabase.WriteTransaction(tx =>
             {
-                var result = tx.Run($"MATCH (m:Movie)-->(g:Genre) RETURN " + 
+                var result = tx.Run($"MATCH (m:Movies)--(g:Genre) RETURN " + 
                                     "{title: m.title, release: m.releaseYear, description: m.description, genre: g.genre} as Movie");
                 return result.Select(r => (Dictionary<string, object>) r[0]).ToList();
             });
@@ -105,7 +105,7 @@ namespace WebAPI.Services
         public string getMoviesByGenre(string genreName){
             List<Dictionary<string, object>> results = neo4jDatabase.WriteTransaction(tx =>
             {
-                var result = tx.Run($"MATCH (m:Movie)--(g:Genre) " +
+                var result = tx.Run($"MATCH (m:Movies)--(g:Genre) " +
                                     "WHERE g.genre = $genre " + 
                                     "return {genre: g.genre, movie: m.title, release: m.releaseYear, description: m.description}",
                                     new {genre = genreName});
@@ -212,7 +212,7 @@ namespace WebAPI.Services
         public string GetAllSeries(){
             List<Dictionary<string, object>> results = neo4jDatabase.WriteTransaction(tx =>
             {
-                var result = tx.Run($"MATCH (s:Series)-->(g:Genre) RETURN " + 
+                var result = tx.Run($"MATCH (s:Series)--(g:Genre) RETURN " + 
                                     "{title: s.title, release: s.releaseYear, description: s.description, genre: g.genre, numOfSeasons: s.numOfSeasons} as Series");
                 return result.Select(r => (Dictionary<string, object>) r[0]).ToList();
             });
@@ -241,7 +241,7 @@ namespace WebAPI.Services
             return System.Text.Encoding.UTF8.GetString(json);
         }
 
-        public bool setupSeriesMovies(){
+        public bool SetupSeriesMovies(){
 
             var create = neo4jDatabase.WriteTransaction(tx =>
             {
@@ -265,7 +265,7 @@ namespace WebAPI.Services
                                     //Movie Actors
                                     MERGE (hvam:Actor {name: 'Frank Hvam', age: '46'})  
                                     MERGE (hemsworth:Actor {name: 'Chris Hemsworth', age: '37'})  
-                                    MERGE (baquero,:Actor {name: 'Ivana Baquero', age: '27'})  
+                                    MERGE (baquero:Actor {name: 'Ivana Baquero', age: '27'})  
 
                                     //Genres create
                                     MERGE (fantasy:Genre {genre:'Fantasy'})

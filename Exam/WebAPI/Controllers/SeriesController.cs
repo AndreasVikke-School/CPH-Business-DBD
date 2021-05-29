@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
                 await redisService.CreateLog(Request, seriesModel);
 
                 chacheService.FlushChache(ChacheTypes.Series);
-                chacheService.FlushChache(ChacheTypes.SeriesByGenre);
+                chacheService.FlushChache(ChacheTypes.SeriesByGenre, seriesModel.genre);
 
                 return neo4jService.createSeries(seriesModel);
             }
@@ -72,29 +72,29 @@ namespace WebAPI.Controllers
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
                 await redisService.CreateLog(Request, "");
 
-                var chache = chacheService.GetChache(ChacheTypes.SeriesByGenre);
+                var chache = chacheService.GetChache(ChacheTypes.SeriesByGenre, genreName);
                 if(chache != null)
                     return chache;
 
                 var series = neo4jService.getSeriesByGenre(genreName);
-                chacheService.CreateChache(ChacheTypes.Series, series);
+                chacheService.CreateChache(ChacheTypes.SeriesByGenre, series, genreName);
                 return series;
             }
         }
 
-        [HttpPost("setup")]
-        public async Task<bool> createSeriesMovies(){
-            using(ChacheService chacheService = new ChacheService(_redisIp))
-            using(LogService redisService = new LogService(_hbaseIp))
-            using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
-                await redisService.CreateLog(Request, "");
+        // [HttpPost("setup")]
+        // public async Task<bool> createSeriesMovies(){
+        //     using(ChacheService chacheService = new ChacheService(_redisIp))
+        //     using(LogService redisService = new LogService(_hbaseIp))
+        //     using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
+        //         await redisService.CreateLog(Request, "");
 
-                chacheService.FlushChache(ChacheTypes.Series);
-                chacheService.FlushChache(ChacheTypes.SeriesByGenre);
+        //         chacheService.FlushChache(ChacheTypes.Series);
+        //         chacheService.FlushChache(ChacheTypes.SeriesByGenre);
 
-                return neo4jService.setupSeriesMovies();
-            }
-        }
+        //         return neo4jService.setupSeriesMovies();
+        //     }
+        // }
 
         
     } 

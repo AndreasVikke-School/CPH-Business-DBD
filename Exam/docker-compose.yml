@@ -1,5 +1,11 @@
 version: "3.8"
 
+x-shared-limit:
+    &mem_limit
+    mem_limit: 512m
+    mem_reservation: 128M
+    cpus: 0.5
+
 x-shared:
     &neo4j-common
     NEO4J_AUTH: neo4j/1234
@@ -17,12 +23,6 @@ x-shared-core:
     NEO4J_dbms_mode: CORE
     NEO4J_causal__clustering_minimum__core__cluster__size__at__formation: 3
 
-x-shared-core:
-    &mem_limit
-    mem_limit: 512m
-    mem_reservation: 128M
-    cpus: 0.5
-
 networks: 
     lan:
 
@@ -35,17 +35,6 @@ services:
             - lan
         ports: 
             - 8000:80
-        # depends_on:
-        #     neo4jcore1:
-        #         condition: service_healthy
-        #     neo4jcore2:
-        #         condition: service_healthy
-        #     neo4jcore3:
-        #         condition: service_healthy
-        #     redis:
-        #         condition: service_healthy
-        #     postgres:
-        #         condition: service_healthy
 
     neo4jcore1:
         image: neo4j:4.2-enterprise
@@ -68,8 +57,6 @@ services:
             interval: 2s
             timeout: 5s
             retries: 40
-        #volumes:
-        #    - ./neo4j_database:/data/databases/neo4j
 
     neo4jcore2:
         image: neo4j:4.2-enterprise

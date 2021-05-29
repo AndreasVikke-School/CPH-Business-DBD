@@ -24,15 +24,21 @@ namespace WebAPI.Services
             redisDatabase = redisConnector.GetDatabase();
         }
 
-        public bool CreateChache(ChacheTypes chacheType, string chacheData) {
+        public bool CreateChache(ChacheTypes chacheType, string chacheData, string genreName = null) {
+            if(genreName != null)
+                return redisDatabase.StringSet($"chache:{chacheType.ToString()}#{genreName}", chacheData);
             return redisDatabase.StringSet($"chache:{chacheType.ToString()}", chacheData);
         }
 
-        public string GetChache(ChacheTypes chacheType) {
+        public string GetChache(ChacheTypes chacheType, string genreName = null) {
+            if(genreName != null)
+                return redisDatabase.StringGet($"chache:{chacheType.ToString()}#{genreName}");
             return redisDatabase.StringGet($"chache:{chacheType.ToString()}");
         }
 
-        public bool FlushChache(ChacheTypes chacheType) {
+        public bool FlushChache(ChacheTypes chacheType, string genreName = null) {
+            if(genreName != null)
+                return redisDatabase.KeyDelete($"chache:{chacheType.ToString()}#{genreName}");
             return redisDatabase.KeyDelete($"chache:{chacheType.ToString()}");
         }
 

@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
                 await logService.CreateLog(Request, movieModel);
 
                 chacheService.FlushChache(ChacheTypes.Movie);
-                chacheService.FlushChache(ChacheTypes.MovieByGenre);
+                chacheService.FlushChache(ChacheTypes.MovieByGenre, movieModel.genre);
 
                 return neo4jService.createMovie(movieModel);
             }
@@ -74,12 +74,12 @@ namespace WebAPI.Controllers
             using(Neo4jService neo4jService = new Neo4jService(_neo4jIp)) {
                 await logService.CreateLog(Request, "");
 
-                var chache = chacheService.GetChache(ChacheTypes.MovieByGenre);
+                var chache = chacheService.GetChache(ChacheTypes.MovieByGenre, genreName);
                 if(chache != null)
                     return chache;
 
                 var movies = neo4jService.getMoviesByGenre(genreName);
-                chacheService.CreateChache(ChacheTypes.MovieByGenre, movies);
+                chacheService.CreateChache(ChacheTypes.MovieByGenre, movies, genreName);
                 return movies;
             }
         }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -54,6 +55,10 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
+
+            using(Neo4jService neo4jService = new Neo4jService(Configuration.GetValue<string>("neo4j-ip"))) {
+                bool setup = neo4jService.SetupSeriesMovies();
+            }
         }
     }
 }
