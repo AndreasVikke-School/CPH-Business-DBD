@@ -252,9 +252,20 @@ namespace WebAPI.Services
                                     MERGE (friends:Series {title: 'Friends', releaseYear: '1994', description: 'A boring pack of friends', numOfSeasons: 10})  
                                     
                                     //Movies
-                                    MERGE(pansLabyrint:Movies {title: 'Pans labyrint', releaseYear: '2006', description: 'Hvad fanden handler den om.'})
-                                    MERGE(thor:Movies {title: 'Thor', releaseYear: '2016', description: 'Marvel Superhero Movie.'})
-                                    MERGE(klovn:Movies {title: 'Klovn', releaseYear: '2010', description: 'Award winning danish comedy.'})
+                                    MERGE(pansLabyrint:Movie {title: 'Pans labyrint', releaseYear: '2006', description: 'Hvad fanden handler den om.'})
+                                    MERGE(thor:Movie {title: 'Thor', releaseYear: '2011', description: 'Marvel Superhero Movie.'})
+                                    MERGE(klovn:Movie {title: 'Klovn', releaseYear: '2010', description: 'Award winning danish comedy.'})
+
+                                    // Directors
+                                    MERGE(nørgaard:Director {name: 'Mikkel Nørgaard', age: '40'})
+                                    MERGE(branagh:Director {name: 'Kenneth Branagh', age: '61'})
+                                    MERGE(delToro:Director {name: 'Guillermo del Toro', age: '61'})
+
+                                    //Writers
+                                    MERGE(lee:Director {name: 'Stan Lee', age: '61'})
+                                    MERGE(miller:Director {name: 'Ashley Miller', age: '61'})
+                                    MERGE(stentz:Director {name: 'Zack Stentz', age: '61'})
+                                    MERGE(payne:Director {name: 'Don Payne', age: '61'})
 
                                     //Series Actors
                                     MERGE (cavill:Actor {name: 'Henry Cavill', age: '38'})  
@@ -264,6 +275,7 @@ namespace WebAPI.Services
 
                                     //Movie Actors
                                     MERGE (hvam:Actor {name: 'Frank Hvam', age: '46'})  
+                                    MERGE (christensen:Actor {name: 'Casper Cristensen', age: '44'})  
                                     MERGE (hemsworth:Actor {name: 'Chris Hemsworth', age: '37'})  
                                     MERGE (baquero:Actor {name: 'Ivana Baquero', age: '27'})  
 
@@ -271,6 +283,39 @@ namespace WebAPI.Services
                                     MERGE (fantasy:Genre {genre:'Fantasy'})
                                     MERGE (superhero:Genre {genre:'Superhero'})
                                     MERGE (comedy:Genre {genre:'Comedy'})
+
+                                    //Director set relations
+                                    MERGE (delToro)-[:DIRECTOR_OF]->(pansLabyrint)  
+                                    MERGE (branagh)-[:DIRECTOR_OF]->(thor)  
+                                    MERGE (nørgaard)-[:DIRECTOR_OF]->(klovn) 
+                                    //Director end relations
+                                    
+                                    //Writer set relations
+                                    MERGE (delToro)-[:WRITER_OF]->(pansLabyrint)  
+                                    MERGE (lee)-[:WRITER_OF]->(thor)  
+                                    MERGE (miller)-[:WRITER_OF]->(thor)  
+                                    MERGE (stentz)-[:WRITER_OF]->(thor)  
+                                    MERGE (payne)-[:WRITER_OF]->(thor)  
+                                    MERGE (christensen)-[:WRITER_OF]->(klovn)
+                                    MERGE (hvam)-[:WRITER_OF]->(klovn)
+                                    //Writer end relations
+
+                                    //Actors set relations
+
+                                    //Series
+                                    MERGE (cavill)-[:ACTED_IN]->(theWitcher)  
+                                    MERGE (simmons)-[:ACTED_IN]->(invincible)  
+                                    MERGE (yeun)-[:ACTED_IN]->(invincible) 
+                                    MERGE (aniston)-[:ACTED_IN]->(friends)  
+
+                                    //Movie
+                                    MERGE (hvam)-[:ACTED_IN]->(klovn)  
+                                    MERGE (christensen)-[:ACTED_IN]->(klovn)  
+                                    MERGE (hemsworth)-[:ACTED_IN]->(thor)  
+                                    MERGE (baquero)-[:ACTED_IN]->(pansLabyrint) 
+
+                                    //End actor relationship
+
 
                                     //Genres set relations
 
@@ -287,21 +332,8 @@ namespace WebAPI.Services
                                     //End genre relationship 
 
 
-                                    //Actors set relations
 
-                                    //Series
-                                    MERGE (cavill)-[:ACTED_IN]->(theWitcher)  
-                                    MERGE (simmons)-[:ACTED_IN]->(invincible)  
-                                    MERGE (yeun)-[:ACTED_IN]->(invincible) 
-                                    MERGE (aniston)-[:ACTED_IN]->(friends)  
-
-                                    //Movies
-                                    MERGE (hvam)-[:ACTED_IN]->(klovn)  
-                                    MERGE (hemsworth)-[:ACTED_IN]->(thor)  
-                                    MERGE (baquero)-[:ACTED_IN]->(pansLabyrint) 
-
-                                    //End actor relationship
-
+                                    
                                     //Foreach loop for seasons episodes
                                     WITH [invincible, theWitcher, friends] as seriesList  
                                     FOREACH(series in seriesList |   
