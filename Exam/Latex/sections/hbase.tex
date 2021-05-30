@@ -1,1 +1,46 @@
 \section{HBASE}
+
+\begin{tcolorbox}
+    \lstset{style=htmlstyle}
+    \begin{lstlisting}[language={html}, caption={Watchlist HBASE Model}, label={lst:watchlist}]
+        watchlist
+            <profile id>
+                <movie/series id>:type = <type>
+                <movie/series id>:timestamp = <timestamp>
+                <movie/series id>:season\_id = <season id>
+                <movie/series id>:episode\_id = <episode id>
+
+        watchlist
+            1234
+                5:type = movie
+                5:timestamp = 1600
+                2:type = series
+                2:timestamp = 1200
+                2:season\_id = 3
+                2:episode\_id = 2
+            1235
+                5:type = movie
+                5:timestamp = 45000
+                4:type = movie
+                4:timestamp = 200
+    \end{lstlisting}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \lstset{style=htmlstyle}
+    \begin{lstlisting}[language={html}, caption={Logs HBASE Model}, label={lst:log}]
+        log
+            <http_method>
+                <path>:<epoc_timestamp> = <data>
+    
+        log
+            GET
+                /api/Account/get:1621847222436 = {Id: 1}
+                /api/Account/get:1621847222435 = {Id: 5}
+                /api/Account/get/all:1621847222436 = {}
+            POST
+                /api/Account/create:1621847222478 = {JSON DATA}
+                /api/Account/create:1621847222578 = {JSON DATA}
+                /api/Account/create:1621847222443 = {JSON DATA}
+    \end{lstlisting}
+\end{tcolorbox}

@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[10pt]{article}
 \usepackage[subpreambles=true]{standalone}
 \usepackage[utf8]{inputenc}
 \usepackage[danish]{babel}
@@ -6,6 +6,7 @@
 \usepackage{subcaption}
 \usepackage[pdfpagelabels]{hyperref}
 \usepackage[nottoc]{tocbibind}
+\usepackage{csquotes}
 \usepackage{multicol}
 \usepackage{float}
 \usepackage{enumerate}
@@ -22,7 +23,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \import{codecolors/}{csharp.tex}
-\import{codecolors/}{dos.tex}
+\import{codecolors/}{datamodel.tex}
 
 \graphicspath{ {./images/} }
 
@@ -36,7 +37,7 @@
 }
 
 
-\title{Thesis Tempalte}
+\title{DBD}
 \author{
     Andreas Zoega Vesterborg Vikke\\
     \texttt{cph-av105}
@@ -50,17 +51,20 @@
     (William Sehested Huusfeldt)\\
     \texttt{cph-wh106}
 }
-\date{Februar 2021}
+\date{Juni 2021}
 
 \begin{document}
+\hypersetup{pageanchor=false}
 
 \listoftodos
 \todo{Remove List Todo Package Before Submission}
 
 \maketitle
+\newpage
+\import{sections/}{indledning.tex}
 \tableofcontents
+\newpage
 
-\chapter{Examples}
 \import{sections/}{how_to_run.tex}
 \import{sections/}{api.tex}
 \import{sections/}{cap.tex}

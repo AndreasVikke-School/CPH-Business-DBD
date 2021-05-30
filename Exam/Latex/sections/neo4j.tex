@@ -1,1 +1,34 @@
 \section{Neo4j}
+
+\begin{tcolorbox}
+    \lstset{style=sharpstyle}
+    \begin{lstlisting}[language={[Sharp]C}, caption={Logs HBASE Model}, label={lst:log}]
+        public class MovieModel
+        {
+            public string Title { get; set; }
+            public string ReleaseYear { get; set; }
+            public string Description { get; set; }
+            public string genre { get; set; }
+            public List<string> actors {get; set;}
+            public List<string> directors {get; set;}
+            public List<string> writers {get; set;}
+        }
+    \end{lstlisting}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \lstset{style=sharpstyle}
+    \begin{lstlisting}[language={[Sharp]C}, caption={Logs HBASE Model}, label={lst:log}]
+        public class SeriesModel
+        {
+            public string Title { get; set; }
+            public string ReleaseYear { get; set; }
+            public string Description { get; set; }
+            public string genre { get; set; }
+            public List<string> actors {get; set;}
+            public List<string> directors {get; set;}
+            public List<string> writers {get; set;}
+            public int seasons {get; set;}
+        }
+    \end{lstlisting}
+\end{tcolorbox}
