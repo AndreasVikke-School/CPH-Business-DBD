@@ -1,5 +1,11 @@
 \section{Neo4j}
+\begin{displayquote}
+    \textit{\textbf{CAP:} CA - Konsistent med en høj tilgængelighed (ACID kompatibel)}
+\end{displayquote}
 
+Dette er en NoSQL databasetype, mere specifikt er det en graph database. Sammen med andre NoSQL databaser kan denne skaleres horisontalt og har en ustruktureret datastruktur, der blandt andet gør det muligt at lagre forskellige formater af data. Graph databaser er pr. design lavet til data med store mængder af relationer, hvorfor det var oplagt at benytte sig af denne database type til lagring af information og relationer mellem film, serier, skuespillere, forfattere osv. Eftersom al dette data deler mange relationer indbyrdes, eksempelvis har skuespillere relationer til de film og tv-serier de medvirker i. En anden fordel ved denne database type er dens fleksibilitet vedr. dataformatet, hvilket på sigt kan ændre sig alt efter behov. Neo4J og graph databaser bruges dog ikke til at lagre selve mediet men man kan derimod have en attribut på en node i Neo4J der peger mod medie-filen.
+\bigbreak
+Til databasen er der udviklet to datamodeller: en for film og en for tv-serier. Der er ikke udviklet datamodeller til skuespillere, instruktører eller manuskriptforfattere på grund af, at det er relationen mellem dem og filmen/serien der er vigtig, og der ikke er fokus på dybere information på de medvirkende. De to datamodeller ses her:
 \begin{tcolorbox}
     \lstset{style=sharpstyle}
     \begin{lstlisting}[language={[Sharp]C}, caption={Logs HBASE Model}, label={lst:log}]
@@ -32,3 +38,6 @@
         }
     \end{lstlisting}
 \end{tcolorbox}
+De to modeller ligner til forveksling hinanden meget, men tv-serie modellen afviger fra MovieModel ved at have en ‘seasons’ attribut, der viser hvor mange sæsoner den respektive tv-serie har.
+Hver tv-serie og film node i databasen består af attributterne title, ReleaseYear, Description og Genre hvor tv-serier også har Seasons. For actors, directors og writers, så er disse ikke attributer direkte på noden, men derimod en node for sig selv hvor den specifikke tv-serie eller film har en relation til.
+Fordelen med at tage brug af Neo4J her er, at man let kan lave søgninger på bestemte typer af relations, således kan man hurtigt få information på hvilke noder der har f.eks. en “DIRECTED\_BY” relation til en film. Det gør søgning på f.eks. alle film indenfor en genre hurtig og intuitiv.

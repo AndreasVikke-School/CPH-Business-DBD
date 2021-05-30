@@ -1,5 +1,10 @@
 \section{PostgreSQL}
+\begin{displayquote}
+    \textit{\textbf{CAP:} CA - Konsistent med en høj tilgængelighed (ACID kompatibel)}
+\end{displayquote}
+
 PostgreSQL som også bliver kaldt Postgres er et open-source objekt-relationelt databasesystem som blev startet på University of California, Berkeley. Postgres er kendt for deres pålidelighed og dataintegritet som gør det et ekseptionelt valg til at opbevare kundedata. Postgres har udover deres mange features også været ACID-kompatibel siden 2001, hvilken er vigtigt når der er at gøre med kundedata. Postgres skriver ydermere også på deres hjemmeside \cite{postgresabout}.
 \begin{displayquote}
     PostgreSQL has been proven to be highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate.
 \end{displayquote}
+På Netflix er der per account også x antal profiler, som har hver deres mængde data. Vi har valgt at gemme disse profiler sammen med accounten i Postgres, hvor vi ved at lave en relation kan hente alle profiler for en specifik account idet man for eksempel logger ind. 

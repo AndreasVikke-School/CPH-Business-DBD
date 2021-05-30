@@ -52,11 +52,6 @@ services:
             NEO4J_dbms_default__advertised__address: neo4jcore1
             NEO4J_dbms_connector_http_listen__address: :7474
             NEO4J_dbms_connector_bolt_listen__address: :7687
-        healthcheck:
-            test: wget http://localhost:7474/browser -O -
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     neo4jcore2:
         image: neo4j:4.2-enterprise
@@ -74,11 +69,6 @@ services:
             NEO4J_dbms_default__advertised__address: neo4jcore2
             NEO4J_dbms_connector_http_listen__address: :7475
             NEO4J_dbms_connector_bolt_listen__address: :7688
-        healthcheck:
-            test: wget http://localhost:7475/browser -O -
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     neo4jcore3:
         image: neo4j:4.2-enterprise
@@ -96,11 +86,6 @@ services:
             NEO4J_dbms_default__advertised__address: neo4jcore3
             NEO4J_dbms_connector_http_listen__address: :7476
             NEO4J_dbms_connector_bolt_listen__address: :7689
-        healthcheck:
-            test: wget http://localhost:7476/browser -O -
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     neo4jreadreplica1:
         image: neo4j:4.2-enterprise
@@ -119,11 +104,6 @@ services:
             NEO4J_dbms_default__advertised__address: neo4jreadreplica1
             NEO4J_dbms_connector_http_listen__address: :7477
             NEO4J_dbms_connector_bolt_listen__address: :7690
-        healthcheck:
-            test: wget http://localhost:7477/browser -O -
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     neo4jreadreplica2:
         image: neo4j:4.2-enterprise
@@ -142,11 +122,6 @@ services:
             NEO4J_dbms_default__advertised__address: neo4jreadreplica2
             NEO4J_dbms_connector_http_listen__address: :7478
             NEO4J_dbms_connector_bolt_listen__address: :7691
-        healthcheck:
-            test: wget http://localhost:7478/browser -O -
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     redis:
         image: redis:6.2.3
@@ -158,11 +133,6 @@ services:
             - "6379:6379"
         environment:
             - REDIS_REPLICATION_MODE=master
-        healthcheck:
-            test: redis-cli -a 1234 ping
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     postgres:
         image: postgres:13.3
@@ -176,11 +146,6 @@ services:
             POSTGRES_PASSWORD: 1234
         volumes:
             - ./db_scripts/Postgres.sql:/docker-entrypoint-initdb.d/Postgres.sql
-        healthcheck:
-            test: pg_isready -U postgres
-            interval: 2s
-            timeout: 5s
-            retries: 40
 
     hbasemaster:
         image: blueskyareahm/hbase-base:2.1.3

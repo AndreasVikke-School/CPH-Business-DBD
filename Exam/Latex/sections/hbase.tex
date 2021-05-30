@@ -1,14 +1,18 @@
 \section{HBASE}
+\begin{displayquote}
+    \textit{\textbf{CAP:} CP - Konsistent med en høj partitions tolerance}
+\end{displayquote}
 
+HBase er en kolonne orienteret database som er bygget ovenpå Hadoops File Systems(HDFS). Det er et open-source projekt og da der er tale om en nosql database er det muligt at skalere databasen horisontalt. HBases datamodel ligner Google’s “big table” som er designet til at give en hurtig adgang til store mængder struktureret data og samtidig udnytter HBase HDFS’ fejltolerance. Desuden er HBase en del af Hadoops ecosystem som udbyder real-time adgang til læsning og skrivning af data til HDFS. Det er muligt at gemme data direkte i HDFS eller gennem HBase men for at kunne læse data fra HDFS skal det gå igennem HBase. I vores projekt har vi valgt at bruge HBase til at gemme den data der beskriver hvor langt en bruger er kommet med en given film eller serie. Nedenfor ses database modellen:
 \begin{tcolorbox}
     \lstset{style=htmlstyle}
-    \begin{lstlisting}[language={html}, caption={Watchlist HBASE Model}, label={lst:watchlist}]
+    \begin{lstlisting}[language={[Sharp]C}, caption={Watchlist HBASE Model}, label={lst:watchlist}]
         watchlist
             <profile id>
                 <movie/series id>:type = <type>
                 <movie/series id>:timestamp = <timestamp>
-                <movie/series id>:season\_id = <season id>
-                <movie/series id>:episode\_id = <episode id>
+                <movie/series id>:season_id = <season id>
+                <movie/series id>:episode_id = <episode id>
 
         watchlist
             1234
@@ -16,8 +20,8 @@
                 5:timestamp = 1600
                 2:type = series
                 2:timestamp = 1200
-                2:season\_id = 3
-                2:episode\_id = 2
+                2:season_id = 3
+                2:episode_id = 2
             1235
                 5:type = movie
                 5:timestamp = 45000
@@ -25,10 +29,14 @@
                 4:timestamp = 200
     \end{lstlisting}
 \end{tcolorbox}
+På figur XXX ser vi at vi har en en overordnet tabel kaldet watchlist i denne tabel gemmer vi så profil id’et som vores række nøgle efterfulgt af id’et på den pågældende film eller serie. Derudover gemmer vi også hvilken type materiale der er tale om altså film eller serie samt et timestamp på hvor lang denne profil er kommet med den givne film eller serie. Hvis der er tale om en serie gemmer vi samtidig id’et på afsnittet der er tale om og id’et på hvilken sæson vi finder afsnittet i. På figur XXX ses også et eksempel på en profil med id 1234 hvor det fremgår at denne profil har set en film med id 5 og har timestampet 1600. Det fremgår også at samme profil er i gang med at se en serie der har id 2 hvor der er tale om det 2. afsnit i den 3. sæson og afsnittet har så et timestamp på 1200. På figur XXX ses ydermere endnu en profil der er i gang med at se to film med hhv. id 4 og 5.
+\bigbreak
+
+Udover at gemme en “liste” i HBase over hvor langt hver profil er kommet med diverse film og serier gemmer vi også en “liste” af logs på api kald.
 
 \begin{tcolorbox}
     \lstset{style=htmlstyle}
-    \begin{lstlisting}[language={html}, caption={Logs HBASE Model}, label={lst:log}]
+    \begin{lstlisting}[language={[Sharp]C}, caption={Logs HBASE Model}, label={lst:log}]
         log
             <http_method>
                 <path>:<epoc_timestamp> = <data>
@@ -44,3 +52,4 @@
                 /api/Account/create:1621847222443 = {JSON DATA}
     \end{lstlisting}
 \end{tcolorbox}
+På figur XXX ser vi en tabel med navnet log som har en http metode som række nøgle efterfulgt af vejen der er brugt til http metoden som familie id samt et timestamp skrevet som unix timestamp med tilhørende json data. På figur XXX fremgår der også to eksempler af tabellen log hvor der i det første eksempel er blevet kaldet en get metode på /api/Account/get med et tilhørende unix timestamp og json data(i dette tilfælde er json dataen det id på den film eller serie brugeren ønsker at se). Det andet eksempel er en en post metode som skal symbolisere en brugeroprettelse hvor json dataen indeholder de nødvendige oplysninger for at oprette en bruger.

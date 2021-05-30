@@ -1,13 +1,16 @@
 \section{Redis}
+\begin{displayquote}
+    \textit{\textbf{CAP:} CP - Konsistent med en høj partitions tolerance}
+\end{displayquote}
 
 \begin{tcolorbox}
     \lstset{style=htmlstyle}
-    \begin{lstlisting}[language={html}, caption={Logs HBASE Model}, label={lst:log}]
-        chache:<chache_type>#<genre ifexists> = <json data>
+    \begin{lstlisting}[language={[Sharp]C}, caption={Logs HBASE Model}, label={lst:cache}]
+        cache:<cache_type>#<genre ifexists> = <json data>
 
-        chache:Movie = {JSON DATA}
-        chache:MovieByGenre#Fantasy = {JSON DATA}
-        chache:Series = {JSON DATA}
-        chache:SeriesByGenre#Fantasy = {JSON DATA}
+        cache:Movie = {JSON DATA}
+        cache:MovieByGenre#Fantasy = {JSON DATA}
+        cache:Series = {JSON DATA}
+        cache:SeriesByGenre#Fantasy = {JSON DATA}
     \end{lstlisting}
 \end{tcolorbox}
