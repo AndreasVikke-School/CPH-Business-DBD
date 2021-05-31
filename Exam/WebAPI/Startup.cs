@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -37,6 +38,12 @@ namespace WebAPI
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
+
+                using(Neo4jService neo4jService = new Neo4jService(Configuration.GetValue<string>("neo4j-ip"))) {
+                    Console.WriteLine("Setting up Neo4J Data!");
+                    bool setup = neo4jService.SetupSeriesMovies();
+                    Console.WriteLine("--- Done ---");
+                }
             }
 
             app.UseHttpsRedirection();
@@ -55,10 +62,6 @@ namespace WebAPI
             {
                 endpoints.MapControllers();
             });
-
-            using(Neo4jService neo4jService = new Neo4jService(Configuration.GetValue<string>("neo4j-ip"))) {
-                bool setup = neo4jService.SetupSeriesMovies();
-            }
         }
     }
 }
