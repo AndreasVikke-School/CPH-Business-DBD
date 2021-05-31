@@ -3,8 +3,38 @@
     \textit{\textbf{CAP:} CA - Konsistent med en høj tilgængelighed (ACID kompatibel)}
 \end{displayquote}
 
-PostgreSQL som også bliver kaldt Postgres er et open-source objekt-relationelt databasesystem som blev startet på University of California, Berkeley. Postgres er kendt for deres pålidelighed og dataintegritet som gør det et ekseptionelt valg til at opbevare kundedata. Postgres har udover deres mange features også været ACID-kompatibel siden 2001, hvilken er vigtigt når der er at gøre med kundedata. Postgres skriver ydermere også på deres hjemmeside \cite{postgresabout}.
+PostgreSQL som også bliver kaldt Postgres er et open-source objekt-relationelt databasesystem som blev startet på University of California, Berkeley. \cite{postgresabout} Postgres er kendt for deres pålidelighed og dataintegritet som gør det et ekseptionelt valg til at opbevare kundedata. Postgres har udover deres mange features også været ACID-kompatibel siden 2001, hvilken er vigtigt når der er at gøre med kundedata. Postgres skriver ydermere også på deres hjemmeside \cite{postgresabout}.
 \begin{displayquote}
     PostgreSQL has been proven to be highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate.
 \end{displayquote}
-På Netflix er der per account også x antal profiler, som har hver deres mængde data. Vi har valgt at gemme disse profiler sammen med accounten i Postgres, hvor vi ved at lave en relation kan hente alle profiler for en specifik account idet man for eksempel logger ind. 
+På Netflix er der per account også x antal profiler, som hver har deres mængde forskellig data. Vi har valgt at gemme disse profiler sammen med accounten i Postgres, så vi ved at lave en relation kan hente alle profiler for en specifik account. På listing \ref{lst:sql:accounts} og \ref{lst:sql:profiles} nedenfor kan SQL de to create scripts ses. Account har en primary key som bliver automatisk inkrementeret, som vi i profiles kan bruge til at lave en foreign key. På denne måde vil hver profil være knyttet til en account.
+
+\begin{tcolorbox}
+    \lstset{style=sharpstyle}
+    \begin{lstlisting}[language={SQL}, caption={Logs HBASE Model}, label={lst:sql:accounts}]
+        CREATE TABLE IF NOT EXISTS accounts (
+            account_id INT GENERATED ALWAYS AS IDENTITY,
+            email varchar(255) UNIQUE NOT NULL,
+            password varchar(200) NOT NULL,
+            firstname varchar(50) NOT NULL,
+            lastname varchar(50) NOT NULL,
+            PRIMARY KEY(account_id)
+        );
+    \end{lstlisting}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \lstset{style=sharpstyle}
+    \begin{lstlisting}[language={SQL}, caption={Logs HBASE Model}, label={lst:sql:profiles}]
+        CREATE TABLE IF NOT EXISTS profiles (
+            profile_id INT GENERATED ALWAYS AS IDENTITY,
+            account_id INT NOT NULL,
+            name varchar(50) NOT NULL,
+            age int NOT NULL,
+            PRIMARY KEY(profile_id),
+            CONSTRAINT fk_account
+                FOREIGN KEY(account_id)
+                    REFERENCES accounts(account_id)
+        );
+    \end{lstlisting}
+\end{tcolorbox}
