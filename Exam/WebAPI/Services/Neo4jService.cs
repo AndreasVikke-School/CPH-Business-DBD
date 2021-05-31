@@ -262,10 +262,10 @@ namespace WebAPI.Services
                                     MERGE(delToro:Director {name: 'Guillermo del Toro', age: '61'})
 
                                     //Writers
-                                    MERGE(lee:Director {name: 'Stan Lee', age: '61'})
-                                    MERGE(miller:Director {name: 'Ashley Miller', age: '61'})
-                                    MERGE(stentz:Director {name: 'Zack Stentz', age: '61'})
-                                    MERGE(payne:Director {name: 'Don Payne', age: '61'})
+                                    MERGE(lee:Writer {name: 'Stan Lee', age: '61'})
+                                    MERGE(miller:Writer {name: 'Ashley Miller', age: '61'})
+                                    MERGE(stentz:Writer {name: 'Zack Stentz', age: '61'})
+                                    MERGE(payne:Writer {name: 'Don Payne', age: '61'})
 
                                     //Series Actors
                                     MERGE (cavill:Actor {name: 'Henry Cavill', age: '38'})  
