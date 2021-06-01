@@ -1,5 +1,5 @@
 \section{How To Run}
-Applikationen er lavet som en docker-compose fil for at gøre det nemmere og mere robust at køre. Det første der skal gøres er at sætte hvor meget RAM og CPU containerne må bruge. Dette gøres ved at åbne “docker-compose.yml” og sætte “mem\_limit” og “cpus” under “x-shared-limit”. Disse tal bliver sat én gang men bliver brugt til alle 12 container som bliver opsat.
+Applikationen er lavet som en docker-composefil for at gøre det nemmere og mere robust at køre. Det første der skal gøres, er at sætte, hvor meget RAM og CPU containerne må bruge. Dette gøres ved at åbne “docker-compose.yml” og sætte “mem\_limit” og “cpus” under “x-shared-limit”. Disse tal bliver sat én gang, men bliver brugt til alle 12 container, der bliver opsat.
 \begin{tcolorbox}
     \text mem\_lmit = 512m \\*
     \text cpus = 0.5 \\*
@@ -7,9 +7,9 @@ Applikationen er lavet som en docker-compose fil for at gøre det nemmere og mer
     \text 512 * 12 / 1024 = 6gb memory \\*
     \text 0.5 * 12 = 6 CPU
 \end{tcolorbox}\leavevmode \\*
-Efter at have sat limits kan man starte applikationen med denne kommando:
+Efter at have opsat limits kan applikationen startes ved at køre følgende kommando:
 \begin{tcolorbox}
     \text docker-compose up \\*
     \textit{^^ Vigtig at have bindestreg mellem docker og compose, for at gøre brug af de satte limits.'}
 \end{tcolorbox}\leavevmode \\*
-Selve applikationen vil tage noget tid at køre (omkring 5-10 minutter afhængig af hvor mange ressourcer du har allokeret i step 1). Beskeden “All Databases is up and running….” betyder at alle container køre og at REST API’et har forbindelse til dem. Herfra kan du åbne din browser og navigere til: \url{http://localhost:8000/swagger} Hvor der vil blive fremvist et Swagger API med alle de kald der er opsat. I næste afsnit \nameref{section:rest_api} kan du se hvor de forskellige endpoints føre dig hen og hvilke databaser de snakker med.
+Selve applikationen vil tage noget tid at køre (omkring 5-10 minutter afhængig af, hvor mange ressourcer du har allokeret i step 1). Beskeden “All Databases is up and running….” betyder, at alle container kører og at REST API’et har forbindelse til dem. Herfra kan du åbne din browser og navigere til: \url{http://localhost:8000/swagger} Her vil der blive fremvist et Swagger API med alle de kald, der er opsat. I næste afsnit \nameref{section:rest_api} kan du se, hvor de forskellige endpoints fører dig hen og hvilke databaser de snakker med.

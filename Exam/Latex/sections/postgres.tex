@@ -2,12 +2,11 @@
 \begin{displayquote}
     \textit{\textbf{CAP:} CA - Konsistent med en høj tilgængelighed (ACID kompatibel)}
 \end{displayquote}
-
-PostgreSQL som også bliver kaldt Postgres er et open-source objekt-relationelt databasesystem som blev startet på University of California, Berkeley. \cite{postgresabout} Postgres er kendt for deres pålidelighed og dataintegritet som gør det et ekseptionelt valg til at opbevare kundedata. Postgres har udover deres mange features også været ACID-kompatibel siden 2001, hvilken er vigtigt når der er at gøre med kundedata. Postgres skriver ydermere også på deres hjemmeside \cite{postgresabout}.
+PostgreSQL - som også bliver kaldt Postgres - er et open-source objekt-relationelt databasesystem, der blev startet på University of California, Berkeley \cite{postgresabout}. Postgres er kendt for deres pålidelighed og dataintegritet, der gør det et ekseptionelt valg til at opbevare kundedata. Postgres har udover deres mange features også været ACID-kompatibel siden 2001, hvilken er vigtigt, når der er at gøre med kundedata. Postgres skriver ydermere på deres hjemmeside:
 \begin{displayquote}
-    PostgreSQL has been proven to be highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate.
+    "PostgreSQL has been proven to be highly scalable both in the sheer quantity of data it can manage and in the number of concurrent users it can accommodate." - PostgreSQL\cite{postgresabout}
 \end{displayquote}
-På Netflix er der per account også x antal profiler, som hver har deres mængde forskellig data. Vi har valgt at gemme disse profiler sammen med accounten i Postgres, så vi ved at lave en relation kan hente alle profiler for en specifik account. På listing \ref{lst:sql:accounts} og \ref{lst:sql:profiles} nedenfor kan SQL de to create scripts ses. Account har en primary key som bliver automatisk inkrementeret, som vi i profiles kan bruge til at lave en foreign key. På denne måde vil hver profil være knyttet til en account.
+På Netflix er der pr. account også x antal profiler, som hver har deres mængde forskellig data. Vi har valgt at gemme disse profiler sammen med accounten i Postgres, så vi ved at lave en relation kan hente alle profiler for en specifik account. På listing \ref{lst:sql:accounts} og \ref{lst:sql:profiles} nedenfor kan de to SQL create scripts ses. Account har en primary key, der bliver automatisk inkrementeret, som vi i profiles kan bruge til at lave en foreign key. På denne måde vil hver profil være knyttet til en account.
 
 \begin{tcolorbox}
     \lstset{style=sharpstyle}
